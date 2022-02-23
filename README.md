@@ -1,5 +1,5 @@
 <h3 id="logos" align="center">
-  <div style="text-align: center;">
+  <div style="text-align: center; display: block;">
 		<img src="assets/git.png" height="128">&nbsp;&nbsp;
   	<img src="assets/plus-small.png" height="48">&nbsp;&nbsp;&nbsp;
 		<img src="assets/database.png" height="112">
