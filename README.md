@@ -1,7 +1,9 @@
 <h3 id="logos" align="center">
-	<img src="assets/git.png" height="128">&nbsp;&nbsp;
-  <span style="text-align: center;"><img src="assets/plus-small.png" height="48"></span>&nbsp;&nbsp;&nbsp;
-	<img src="assets/database.png" height="112">
+  <div style="text-align: center;">
+		<img src="assets/git.png" height="128">&nbsp;&nbsp;
+  	<img src="assets/plus-small.png" height="48">&nbsp;&nbsp;&nbsp;
+		<img src="assets/database.png" height="112">
+  </div>
 	<br><br>
 	<p>Git Dependencies Syncer</p>
 </h3>
