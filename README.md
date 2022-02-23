@@ -1,10 +1,13 @@
 <h3 id="logos" align="center">
 	<img src="assets/git.png" height="128">&nbsp;&nbsp;
-  <img src="assets/plus.png" height="48" align="top">&nbsp;&nbsp;&nbsp;
+  <span style="text-align: center">
+    <img src="assets/plus.png" height="48">&nbsp;&nbsp;&nbsp;
+  </span>
 	<img src="assets/database.png" height="112">
-	<br>
+	<br><br>
 	<p>Git Dependencies Syncer</p>
 </h3>
+
 
 
 
