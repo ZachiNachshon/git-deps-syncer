@@ -1,8 +1,11 @@
 <h3 id="logos" align="center">
 	<img src="assets/git.png" height="128">&nbsp;&nbsp;
-  <img src="assets/plus.png" height="48">&nbsp;&nbsp;&nbsp;
-	<img src="assets/database.png" height="112"><p>Git Dependencies Syncer</p>
+  <img src="assets/plus.png" height="48" align="top">&nbsp;&nbsp;&nbsp;
+	<img src="assets/database.png" height="112">
+	<br>
+	<p>Git Dependencies Syncer</p>
 </h3>
+
 
 
 <br>
@@ -69,6 +72,8 @@ For additional installation methods [read here](docs/installation.md).
 <br>
 
 <h3 id="why-creating">💡 Why Creating <code>git-deps-syncer</code>?</h3>
+
+These are some of the requirements I've had which lead me to implement a solution myself instead of using git `submodule` / `subtree`:
 
 1. Merge any git repository into a working repository source code, treating it as external source dependency
 
