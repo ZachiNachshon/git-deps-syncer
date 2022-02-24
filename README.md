@@ -90,7 +90,7 @@ Those are some of the requirements that lead me to implement a custom solution i
 
 | :heavy_exclamation_mark: Note                                |
 | :----------------------------------------------------------- |
-| Every git repository is being cloned into a shared cache directory outside the working directory and its files and folders are being copied flat without the `git` index. |
+| Every git repository is being cloned into a shared cache directory outside the working directory and its files and folders are being copied without the `git` index. |
 
 <br>
 
