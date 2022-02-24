@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Make sure to update the version as-well on file: resources/version.txt
-VERSION="0.1.0"
+VERSION="0.2.0"
 
 SCRIPT_NAME="Git External Deps Syncer"
 
