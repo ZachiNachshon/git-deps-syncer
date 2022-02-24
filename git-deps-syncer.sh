@@ -828,7 +828,7 @@ clear_external_symlink_and_exit() {
 }
 
 print_local_versions_and_exit() {
-  echo -e "deps-syncer ${VERSION}"
+  echo -e "git-deps-syncer ${VERSION}"
   exit 0
 }
 
