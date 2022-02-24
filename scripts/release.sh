@@ -11,7 +11,7 @@ read_tag_from_file() {
 create_release() {
   local tag=$1
   log_info "Creating a new GitHub release. tag: ${tag}"
-  gh release create "${tag}" --generate-notes
+  gh release create "${tag}"
 }
 
 upload_version() {
