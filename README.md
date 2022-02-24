@@ -74,27 +74,23 @@ For additional installation methods [read here](docs/installation.md).
 
 <h3 id="why-creating">💡 Why Creating <code>git-deps-syncer</code>?</h3>
 
-These are some of the requirements I've had which lead me to implement a solution myself instead of using git `submodule` / `subtree`:
+Those are some of the requirements that lead me to implement a custom solution instead of using git `submodule` / `subtree`:
 
-1. Merge any git repository into a working repository source code, treating it as external source dependency
-
+1. Merge any git repository into a working directory source code, treating it as external source dependency
 1. Keep the external source dependencies immutable for changes
-
 1. Having the external git repositories version controlled
-
 1. Treat external git repositories as they were standard libraries imports
-
 1. Having the ability to hot-swap git external dependencies easily with local paths for development
 
 <br>
 
 <h3 id="how-does-it-work">🔬 How Does It Work?</h3>
 
-`git-deps-syncer` is a CLI utility that can be used globally on any directory, though it should mainly be used on a git repository directory. It relies on pre-configured list of git repositories intended for fetching and storing their source code into a dedicated unique folder, making them available via symlinks for hot-swap if nessesary. 
+`git-deps-syncer` is a CLI utility that can be used globally on any directory, though it should mainly be used on a git repository directory. It relies on pre-configured list of git repositories, those are getting fetched and stored within the source code of the working repository within a dedicated unique folder, making them available via symlinks for hot-swap if nessesary. 
 
 | :heavy_exclamation_mark: Note                                |
 | :----------------------------------------------------------- |
-| Every git repository is being cloned into a dedicated cache directory. Its files and folders are being copied flat without the `git` index. |
+| Every git repository is being cloned into a shared cache directory outside the working directory and its files and folders are being copied flat without the `git` index. |
 
 <br>
 
@@ -140,7 +136,7 @@ These are some of the requirements I've had which lead me to implement a solutio
 
 <h4 id="initial-sync">Initial Sync</h4>
 
-1. Change directory to a destination directory you plan to add git depdencies to
+1. Change directory into any working directory you plan to add git depdencies to
 
 1. Create a `.git-deps/config.json` file by running:
 
@@ -159,8 +155,6 @@ These are some of the requirements I've had which lead me to implement a solutio
    | :--------------------------------------- |
    | Add the flag `--open-github-pr` in order to automatically open a PR based on changes introduced by the `sync-all` action. |
    
-   <br>
-
 1. Run `git-deps-syncer -h` for additional options
 
 <br>
@@ -218,8 +212,8 @@ Global Flags:
 | `-v (--verbose)`   | Output debug logs for deps-syncer client commands executions |
 | `-s (--silent)`    | Do not output logs for deps-syncer client commands executions |
 | `-y`               | Do not prompt for approval and accept everything             |
-| `--save-dev`       | Sync devDependencies local symlinks as declared on .git-deps/config.json |
-| `--open-github-pr` | Open a GitHub PR for git changes after running sync-all      |
+| `--save-dev`       | Sync devDependencies local symlinks as declared on `.git-deps/config.json` |
+| `--open-github-pr` | Open a GitHub PR for git changes after running `sync-all`    |
 
 <br>
 
