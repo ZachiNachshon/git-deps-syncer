@@ -4,11 +4,6 @@
 	<p>Git Dependencies Syncer</p>
 </h3>
 
-
-
-
-
-
 <br>
 
 <p align="center">
@@ -132,6 +127,10 @@ Those are some of the requirements that lead me to implement a custom solution i
 }
 ```
 
+| :bulb: Note                                                  |
+| :----------------------------------------------------------- |
+| The `--save-dev` flag allows to create symlinks for specific local repositories paths as declared under `devDependencies`, it is indended for local development and can be used in conjunction with the rest of the git repositories as declared under `dependencies`. |
+
 <br>
 
 <h4 id="initial-sync">Initial Sync</h4>
@@ -192,17 +191,17 @@ This is a live demo showcasing a `sync-all` action, fetching multiple git reposi
 
 Arguments:
 
-| **Name**                                                     | **Description** |
-| :----------------------------------------------------------- | :------- |
-| `sync-all`                                                 | Sync external git dependencies based on revisions declared on `.git-deps/config.json` |
-| `sync [name]`                                              | Sync a specific external git dependency based on revisions declared on `.git-deps/config.json` |
-| `show`                                                  | Print the external git `dependencies` from the JSON config file |
-| `clear-all`                                       | Remove all symlinks from external folder |
-| `clear [name]`                                         | Remove a specific symlink from external folder |
-| `locations`                                        | Print locations used for `config` / `repositories` / `symlinks` / `clone-path` |
-| `init`                                               | create an empty .git-deps folder with a config.json template file |
-| `update`                                               | Update client to latest version |
-| `version`                                          | Print deps-syncer client versions |
+| **Name**       | **Description** |
+| :------------- | :------- |
+| `sync-all`     | Sync external git dependencies based on revisions declared on `.git-deps/config.json` |
+| `sync [name]`  | Sync a specific external git dependency based on revisions declared on `.git-deps/config.json` |
+| `show`         | Print the external git `dependencies` from the JSON config file |
+| `clear-all`    | Remove all symlinks from external folder |
+| `clear [name]` | Remove a specific symlink from external folder |
+| `locations`    | Print locations used for `config` / `repositories` / `symlinks` / `clone-path` |
+| `init`         | create an empty .git-deps folder with a config.json template file |
+| `update`       | Update client to latest version |
+| `version`      | Print deps-syncer client versions |
 
 Global Flags:
 
@@ -212,7 +211,7 @@ Global Flags:
 | `-v (--verbose)`   | Output debug logs for deps-syncer client commands executions |
 | `-s (--silent)`    | Do not output logs for deps-syncer client commands executions |
 | `-y`               | Do not prompt for approval and accept everything             |
-| `--save-dev`       | Sync devDependencies local symlinks as declared on `.git-deps/config.json` |
+| `--save-dev`       | Sync `devDependencies` local symlinks as declared on `.git-deps/config.json` |
 | `--open-github-pr` | Open a GitHub PR for git changes after running `sync-all`    |
 
 <br>
