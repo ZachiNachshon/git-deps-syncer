@@ -18,7 +18,7 @@
   <a href="#quickstart">QuickStart</a> •
   <a href="#overview">Overview</a> •
   <a href="#support">Support</a> •
-  <a href="#license">License</a>
+  <a href="#licence">License</a>
 </p>
 <br>
 
