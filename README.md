@@ -4,12 +4,21 @@
 	<p>Git Dependencies Syncer</p>
 </h3>
 
-<br>
+<p align="center">
+  <a href="https://opensource.org/licenses/MIT">
+    <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"/>
+  </a>
+  <a href="https://www.paypal.me/ZachiNachshon">
+    <img src="https://img.shields.io/badge/$-donate-ff69b4.svg?maxAge=2592000&amp;style=flat">
+  </a>
+</p>
 
 <p align="center">
   <a href="#requirements">Requirements</a> •
   <a href="#quickstart">QuickStart</a> •
-  <a href="#overview">Overview</a>
+  <a href="#overview">Overview</a> •
+  <a href="#support">Support</a> •
+  <a href="#license">License</a>
 </p>
 <br>
 
