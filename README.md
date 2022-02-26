@@ -18,7 +18,7 @@
   <a href="#quickstart">QuickStart</a> •
   <a href="#overview">Overview</a> •
   <a href="#support">Support</a> •
-  <a href="#licence">License</a>
+  <a href="#license">License</a>
 </p>
 <br>
 
@@ -233,7 +233,7 @@ Global Flags:
 
 <br>
 
-<h2 id="licence">Licence</h2>
+<h2 id="license">License</h2>
 
 MIT
 
