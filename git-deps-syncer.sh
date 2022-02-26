@@ -3,6 +3,14 @@
 # Make sure to update the version as-well on file: resources/version.txt
 VERSION="0.2.0"
 
+# git-deps-syncer is a lightweight CLI tool used for syncing git repositories as
+# external source dependencies into any working directory.
+#
+# It offers a simple alternative to git submodule / subtree by allowing a
+# drop-in-replacement of any git repository as an immutable source dependency
+# that is part of the actual working repository source code,
+# files are located and managed within a dedicated external folder.
+
 SCRIPT_NAME="Git External Deps Syncer"
 
 CLI_ARGUMENT_SYNC_ALL_DEPS=""
@@ -84,13 +92,6 @@ is_valid_clear_dep_value() {
   [[ ! -z "${CLI_VALUE_CLEAR_DEP}" && "${CLI_VALUE_CLEAR_DEP}" != "-"* ]]
 }
 
-# This script syncs external dependencies of this repository.
-# The dependencies are source dependant, meaning they are other git repositories which their content should be
-# merged to the appropriate location on the destination repository.
-#
-# External folder for all dependencies location is <ROOT>/external folder.
-# Repositories that should get merged as dependencies declared in <ROOT>/.config/external_repos.json.
-
 GIT_DEPS_MANAGED_FOLDER=".git-deps"
 GIT_DEPS_CONFIG_FILENAME="config.json"
 EXTERNAL_REPOS_JSON_PATH="${GIT_DEPS_MANAGED_FOLDER}/${GIT_DEPS_CONFIG_FILENAME}"
@@ -102,7 +103,7 @@ CACHED_REPO_CLONE_ROOT="${HOME}/.git-deps-cache"
 # Example:
 #   To exclude 'b' from path <repo>/a/b we'll have to add "a/b" to the array.
 #   This script will append the absolute path for <ABS_PATH>/<REPO_ROOT>/a/b
-EXCLUDED_FILE_AND_DIRS_ARRAY=( ".git" ".idea" )
+EXCLUDED_FILE_AND_DIRS_ARRAY=( ".git" ".idea" ".git-deps" "external" )
 
 COLOR_RED='\033[0;31m'
 COLOR_GREEN='\033[0;32m'

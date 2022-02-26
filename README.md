@@ -13,7 +13,7 @@
 </p>
 <br>
 
-**git-deps-syncer** is a lightweight CLI tool used for synching git repositories as external source dependencies into any working directory.
+**git-deps-syncer** is a lightweight CLI tool used for syncing git repositories as external source dependencies into any working directory.
 
 It offers a simple alternative to git `submodule` / `subtree` by allowing a drop-in-replacement of any git repository as an immutable source dependency that is part of the actual working repository source code, files are located and managed within a dedicated `external` folder.
 
