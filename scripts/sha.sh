@@ -34,7 +34,7 @@ main() {
     read tag
     tag="v${tag}"
 
-    local url="https://github.com/ZachiNachshon/git-deps-syncer/releases/download/"${tag}"/git-deps-syncer.sh"
+    local url="https://github.com/ZachiNachshon/git-deps-syncer/releases/download/${tag}/git-deps-syncer.sh"
     calculate_shasum "${url}"
 
   else

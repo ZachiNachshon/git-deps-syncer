@@ -33,51 +33,55 @@ CLI_VALUE_SYNC_DEP=""
 CLI_VALUE_CLEAR_DEP=""
 
 is_silent() {
-  [[ ! -z ${CLI_OPTION_SILENT} ]]
+  [[ -n ${CLI_OPTION_SILENT} ]]
+}
+
+is_debug() {
+  [[ -n ${CLI_OPTION_VERBOSE} ]]
 }
 
 is_skip_prompt() {
-  [[ ! -z ${CLI_OPTION_SKIP_PROMPT} ]]
+  [[ -n ${CLI_OPTION_SKIP_PROMPT} ]]
 }
 
 is_print_version() {
-  [[ ! -z ${CLI_ARGUMENT_VERSION} ]]
+  [[ -n ${CLI_ARGUMENT_VERSION} ]]
 }
 
 is_update_client() {
-  [[ ! -z ${CLI_ARGUMENT_UPDATE_CLIENT} ]]
+  [[ -n ${CLI_ARGUMENT_UPDATE_CLIENT} ]]
 }
 
 is_print_locations() {
-  [[ ! -z ${CLI_ARGUMENT_LOCATIONS} ]]
+  [[ -n ${CLI_ARGUMENT_LOCATIONS} ]]
 }
 
 is_init() {
-  [[ ! -z ${CLI_ARGUMENT_INIT} ]]
+  [[ -n ${CLI_ARGUMENT_INIT} ]]
 }
 
 is_show_deps() {
-  [[ ! -z ${CLI_ARGUMENT_SHOW_DEPS} ]]
+  [[ -n ${CLI_ARGUMENT_SHOW_DEPS} ]]
 }
 
 is_sync_all_deps() {
-  [[ ! -z ${CLI_ARGUMENT_SYNC_ALL_DEPS} ]]
+  [[ -n ${CLI_ARGUMENT_SYNC_ALL_DEPS} ]]
 }
 
 is_sync_dep() {
-  [[ ! -z ${CLI_ARGUMENT_SYNC_DEP} ]]
+  [[ -n ${CLI_ARGUMENT_SYNC_DEP} ]]
 }
 
 is_clear_all_deps() {
-  [[ ! -z ${CLI_ARGUMENT_CLEAR_ALL_DEPS} ]]
+  [[ -n ${CLI_ARGUMENT_CLEAR_ALL_DEPS} ]]
 }
 
 is_clear_dep() {
-  [[ ! -z ${CLI_ARGUMENT_CLEAR_DEP} ]]
+  [[ -n ${CLI_ARGUMENT_CLEAR_DEP} ]]
 }
 
 should_open_github_pr() {
-  [[ ! -z ${CLI_OPTION_OPEN_GITHUB_PR} ]]
+  [[ -n ${CLI_OPTION_OPEN_GITHUB_PR} ]]
 }
 
 is_dev_dependencies() {
@@ -85,25 +89,25 @@ is_dev_dependencies() {
 }
 
 is_valid_sync_dep_value() {
-  [[ ! -z "${CLI_VALUE_SYNC_DEP}" && "${CLI_VALUE_SYNC_DEP}" != "-"* ]]
+  [[ -n "${CLI_VALUE_SYNC_DEP}" && "${CLI_VALUE_SYNC_DEP}" != "-"* ]]
 }
 
 is_valid_clear_dep_value() {
-  [[ ! -z "${CLI_VALUE_CLEAR_DEP}" && "${CLI_VALUE_CLEAR_DEP}" != "-"* ]]
+  [[ -n "${CLI_VALUE_CLEAR_DEP}" && "${CLI_VALUE_CLEAR_DEP}" != "-"* ]]
 }
 
 GIT_DEPS_MANAGED_FOLDER=".git-deps"
 GIT_DEPS_CONFIG_FILENAME="config.json"
 EXTERNAL_REPOS_JSON_PATH="${GIT_DEPS_MANAGED_FOLDER}/${GIT_DEPS_CONFIG_FILENAME}"
-EXTERNAL_REPOS_FOLDER_PATH="${GIT_DEPS_MANAGED_FOLDER}/external"
-EXTERNAL_REPOS_SYMLINK_PATH="external"
+EXTERNAL_FOLDER_FROM_GIT_DEPS="${GIT_DEPS_MANAGED_FOLDER}/external"
+EXTERNAL_FOLDER_FROM_CONTENT_ROOT="external"
 CACHED_REPO_CLONE_ROOT="${HOME}/.git-deps-cache"
 
 # Excluded files and folder should have the full path from the root folder of the repository
 # Example:
 #   To exclude 'b' from path <repo>/a/b we'll have to add "a/b" to the array.
 #   This script will append the absolute path for <ABS_PATH>/<REPO_ROOT>/a/b
-EXCLUDED_FILE_AND_DIRS_ARRAY=( ".git" ".idea" ".git-deps" "external" )
+EXCLUDED_FILE_AND_DIRS_ARRAY=( ".git" ".idea" ".git-deps" "external" ".gitignore" ".DS_Store")
 
 COLOR_RED='\033[0;31m'
 COLOR_GREEN='\033[0;32m'
@@ -183,8 +187,8 @@ print_instructions_syncer() {
   being copied directly to this repository.
 
   Locations:
-    • Repositories content path - ${COLOR_WHITE}<REPO-ROOT>/${EXTERNAL_REPOS_FOLDER_PATH}/${COLOR_YELLOW}
-    • Repositories symlink path - ${COLOR_WHITE}<REPO-ROOT>/${EXTERNAL_REPOS_SYMLINK_PATH}/${COLOR_YELLOW}
+    • Repositories content path - ${COLOR_WHITE}<REPO-ROOT>/${EXTERNAL_FOLDER_FROM_GIT_DEPS}/${COLOR_YELLOW}
+    • Repositories symlink path - ${COLOR_WHITE}<REPO-ROOT>/${EXTERNAL_FOLDER_FROM_CONTENT_ROOT}/${COLOR_YELLOW}
 
   How to declare a dependency?
   To add/remove an external git dependency, update the JSON file ${COLOR_WHITE}<ROOT>/${EXTERNAL_REPOS_JSON_PATH}${COLOR_YELLOW}${pr_creation_alert}
@@ -209,7 +213,7 @@ print_dev_instructions_syncer() {
   folder of this repository.
 
   Locations:
-    • Repositories symlink path - ${COLOR_WHITE}<ROOT>/${EXTERNAL_REPOS_SYMLINK_PATH}/${COLOR_YELLOW}
+    • Repositories symlink path - ${COLOR_WHITE}<ROOT>/${EXTERNAL_FOLDER_FROM_CONTENT_ROOT}/${COLOR_YELLOW}
 
   How to declare a dev dependency?
   To add/remove an external dev dependency, update the JSON file ${COLOR_WHITE}<ROOT>/${EXTERNAL_REPOS_JSON_PATH}${COLOR_YELLOW}
@@ -332,28 +336,26 @@ get_cached_repo_clone_path() {
   echo "${CACHED_REPO_CLONE_ROOT}/${repo_name}"
 }
 
-get_external_folder_path() {
-  echo "${PWD}/${EXTERNAL_REPOS_FOLDER_PATH}"
+get_external_folder_from_git_deps() {
+  echo "${EXTERNAL_FOLDER_FROM_GIT_DEPS}"
 }
 
-get_external_dependency_path() {
+get_dep_path_from_git_deps() {
   local dep_name=$1
-  local folder=$(get_external_folder_path)
-  echo "${folder}/${dep_name}"
+  echo "${EXTERNAL_FOLDER_FROM_GIT_DEPS}/${dep_name}"
 }
 
-get_repos_config_file_path() {
-  echo "${PWD}/${EXTERNAL_REPOS_JSON_PATH}"
+get_external_folder_from_content_root() {
+  echo "${EXTERNAL_FOLDER_FROM_CONTENT_ROOT}"
 }
 
-get_external_folder_symlink_path() {
-  echo "${PWD}/${EXTERNAL_REPOS_SYMLINK_PATH}"
-}
-
-get_external_dependency_symlink_path() {
+get_dep_symlink_from_content_root() {
   local dep_name=$1
-  local folder=$(get_external_folder_symlink_path)
-  echo "${folder}/${dep_name}"
+  echo "${EXTERNAL_FOLDER_FROM_CONTENT_ROOT}/${dep_name}"
+}
+
+get_config_path_from_content_root() {
+  echo "${EXTERNAL_REPOS_JSON_PATH}"
 }
 
 clone_repository() {
@@ -406,8 +408,10 @@ copy_repo_content_as_external_dependency() {
   local dep_name=$1
   local clone_path=$2
   local copy_path=$3
+  local includes=$4
+  local excludes=$5
 
-  if [[ ! -z "${copy_path}" && "${copy_path}" == *"${dep_name}"* ]]; then
+  if [[ -n "${copy_path}" && "${copy_path}" == *"${dep_name}"* ]]; then
     log_info "Clearing external git dependency copy destination. path: ${copy_path}"
     rm -rf "${copy_path}"
   else
@@ -417,6 +421,14 @@ copy_repo_content_as_external_dependency() {
   log_info "Updating external git dependency files. path: ${copy_path}"
   mkdir -p "${copy_path}"
 
+  # Must use an array for includes when running rsync from a script
+  local includes_array=()
+  if [[ -n "${includes}" ]]; then
+    for incl in ${includes}; do
+      includes_array+=( --include=${incl} )
+    done
+  fi
+
   # Must use an array for exclusions when running rsync from a script
   local exclusion_array=()
   for (( i=0; i < ${#EXCLUDED_FILE_AND_DIRS_ARRAY[@]}; i++ )); do
@@ -424,13 +436,43 @@ copy_repo_content_as_external_dependency() {
     exclusion_array+=( --exclude=${item} )
   done
 
-#  echo "rsync -a "${exclusion_array[@]}" "${clone_path}/" "${copy_path}/""
-  # See here: https://stackoverflow.com/questions/69297946/rsync-ignores-exclude-options-being-run-in-bash-script
-  rsync -a "${exclusion_array[@]}" "${clone_path}/" "${copy_path}/"
+  if [[ -n "${excludes}" ]]; then
+    for excl in ${excludes}; do
+      exclusion_array+=( --exclude=${excl} )
+    done
+  fi
+
+  if [[ -n "${includes}" && -n "${excludes}" ]]; then
+    exclusion_array+=( --exclude=*/ )
+  fi
+
+  if is_debug; then
+    echo """
+    rsync -a "${includes_array[@]}" "${exclusion_array[@]}" "${clone_path}/" "${copy_path}/"
+    """
+  fi
+
+  # Example used from the shell (in-process shouldn't have commas):
+  #   rsync -a \
+  #     --include='golang*/' \
+  #     --exclude=.git \
+  #     --exclude=.idea \
+  #     --exclude=.git-deps \
+  #     --exclude=.external \
+  #     --exclude=.DS_Store \
+  #     --exclude=.gitignore \
+  #     --exclude='*_tests*' \
+  #     --exclude='*/' \
+  #     /path/to/source/dir/ \
+  #     /path/to/destination/dir/
+  # 
+  # Reason for using an array for both includes and excludes:
+  #   https://stackoverflow.com/questions/69297946/rsync-ignores-exclude-options-being-run-in-bash-script
+  rsync -a "${includes_array[@]}" "${exclusion_array[@]}" "${clone_path}/" "${copy_path}/"
 }
 
-check_or_create_external_symlink_folder() {
-  local dep_symlink_folder=$(get_external_folder_symlink_path)
+check_or_create_external_folder_under_content_root() {
+  local dep_symlink_folder=$(get_external_folder_from_content_root)
   if [[ ! -d "${dep_symlink_folder}" ]]; then
     # Create the external folder for symlinks if it doesn't exist yet
     mkdir -p "${dep_symlink_folder}"
@@ -441,22 +483,40 @@ _set_dependency_symlink() {
   local dep_name=$1
   local dep_path=$2
   local dep_type=$3
-  local dep_symlink_path=$(get_external_dependency_symlink_path "${dep_name}")
+  local dep_symlink_path=$(get_dep_symlink_from_content_root "${dep_name}")
 
-  check_or_create_external_symlink_folder
+  check_or_create_external_folder_under_content_root
 
   if is_symlink "${dep_symlink_path}"; then
     local is_same_target=$(is_symlink_target "${dep_symlink_path}" "${dep_path}")
     if [[ -z "${is_same_target}" ]]; then
       log_info "Dependency ${dep_type}is not symlinked to expected target, re-linking. name: ${dep_name}, path: ${dep_path}"
       unlink "${dep_symlink_path}"
-      ln -sf "${dep_path}" "${dep_symlink_path}"
+      if is_debug; then
+        echo """
+        ln -sf "../${dep_path}" "${dep_symlink_path}"
+        """
+      fi
+
+      # Must use relative path to the repo content root for the symlink to 
+      # stay valid on other system such as GitHub
+      ln -sf "../${dep_path}" "${dep_symlink_path}"
+
     else
       log_info "Dependency ${dep_type}is symlinked to expected target. name: ${dep_name}, path: ${dep_path}"
     fi
   else
     log_info "Creating a symlink to ${dep_type}dependency. name: ${dep_name}, path: ${dep_path}"
-    ln -sf "${dep_path}" "${dep_symlink_path}"
+    if is_debug; then
+      echo """
+      ln -sf "../${dep_path}" "${dep_symlink_path}"
+      """
+    fi
+
+    # Must use relative path to the repo content root for the symlink to 
+    # stay valid on other system such as GitHub
+    ln -sf "../${dep_path}" "${dep_symlink_path}"
+
   fi
 }
 
@@ -468,7 +528,7 @@ set_external_dev_dependency_symlink() {
 
 set_external_dependency_symlink() {
   local dep_name=$1
-  local dep_path=$(get_external_dependency_path "${dep_name}")
+  local dep_path=$(get_dep_path_from_git_deps "${dep_name}")
   _set_dependency_symlink "${dep_name}" "${dep_path}"
 }
 
@@ -485,10 +545,12 @@ add_or_sync_dependency() {
   local dep_url=$2
   local dep_branch=$3
   local dep_revision=$4
+  local includes=$5
+  local excludes=$6
 
   local git_repo_name=$(extract_repo_name_from_repo_url "${dep_url}")
   local clone_path=$(get_cached_repo_clone_path "${git_repo_name}")
-  local copy_path=$(get_external_dependency_path "${dep_name}")
+  local copy_path=$(get_dep_path_from_git_deps "${dep_name}")
 
   if [[ ! -d "${clone_path}" ]]; then
     clone_repository "${clone_path}" "${dep_url}" "${dep_branch}" "${dep_revision}"
@@ -499,7 +561,7 @@ add_or_sync_dependency() {
   if [[ -z "${clone_path}" || "${clone_path}" != *"${git_repo_name}"* ]]; then
     log_fatal "Invalid external git dependency clone source. path: ${clone_path}"
   else
-    copy_repo_content_as_external_dependency "${dep_name}" "${clone_path}" "${copy_path}"
+    copy_repo_content_as_external_dependency "${dep_name}" "${clone_path}" "${copy_path}" "${includes}" "${excludes}"
   fi
 
   log_info "Elevating execution permissions ${COLOR_YELLOW}(might prompt for password)${COLOR_NONE}"
@@ -519,7 +581,7 @@ ask_for_sync_approval() {
 ask_for_sync_single_approval() {
   local dep_name=$1
   if ! is_skip_prompt; then
-    local yes_no_response=$(prompt_yes_no "  Sync external git dependency ${dep_name} (enter to skip)" "warning")
+    local yes_no_response=$(prompt_yes_no "  Sync external git dependency '${dep_name}' (enter to skip)" "warning")
     if [[ -z "${yes_no_response}" ]]; then
       echo -e "\n    Nothing has changed.\n"
       exit 0
@@ -531,11 +593,11 @@ open_github_pr() {
 #  local short_revision=$(echo ${revision} | cut -c 1-7)
 
   if should_open_github_pr && ! is_dev_dependencies; then
-#    local external_folder_path=$(get_external_folder_path)
+#    local external_folder_path=$(get_external_folder_from_content_root)
 #    log_info "Creating a PR from dependency vector update. name: ${dep_name}_${short_revision}"
 #    git add "${external_folder_path}" --all
 
-#    local external_folder_symlink_path=$(get_external_folder_symlink_path)
+#    local external_folder_symlink_path=$(get_external_folder_from_content_root)
 #    git add "${external_folder_symlink_path}" --all
 
     # Create branch
@@ -545,12 +607,42 @@ open_github_pr() {
   fi
 }
 
+# Extract includes JSON array to a simple space delimited string
+# ["one", "two", "three"] --> "one two three"
+extract_includes() {
+  local config_file_path=$1
+  local repo_key=$2
+  local includes=""
+
+  for inc_key in $(jq ".dependencies.repos[${repo_key}].includes | keys | .[]" "${config_file_path}"); do
+    include=$(jq -r ".dependencies.repos[].includes[$inc_key]" "${config_file_path}")
+    includes+="${include} "
+  done
+
+  echo "${includes}"
+}
+
+# Extract includes JSON array to a simple space delimited string
+# ["one", "two", "three"] --> "one two three"
+extract_excludes() {
+  local config_file_path=$1
+  local repo_key=$2
+  local excludes=""
+
+  for excl_key in $(jq ".dependencies.repos[${repo_key}].excludes | keys | .[]" "${config_file_path}"); do
+    exclude=$(jq -r ".dependencies.repos[].excludes[$excl_key]" "${config_file_path}")
+    excludes+="${exclude} "
+  done
+
+  echo "${excludes}"
+}
+
 sync_external_dep() {
   local dep_name=$1
   local sync_at_least_one=""
 
   new_line
-  local config_file_path=$(get_repos_config_file_path)
+  local config_file_path=$(get_config_path_from_content_root)
   if is_dev_dependencies; then
     for key in $(jq '.devDependencies.repos | keys | .[]' "${config_file_path}"); do
       repo=$(jq -r ".devDependencies.repos[$key]" "${config_file_path}")
@@ -559,7 +651,7 @@ sync_external_dep() {
       if [[ "${dep_name}" == "all" || "${dep_name}" == "${name}" ]]; then
         local_path=$(jq -r '.localPath' <<< "${repo}")
 
-        if [[ ! -z "${name}" ]]; then
+        if [[ -n "${name}" ]]; then
           print_dependency_sync_title "${name}"
           set_external_dev_dependency_symlink "${name}" "${local_path}"
           sync_at_least_one="true"
@@ -578,9 +670,12 @@ sync_external_dep() {
         branch=$(jq -r '.branch' <<< "${repo}")
         revision=$(jq -r '.revision' <<< "${repo}")
 
-        if [[ ! -z "${name}" ]]; then
+        if [[ -n "${name}" ]]; then
+          includes=$(extract_includes "${config_file_path}" "${key}")
+          excludes=$(extract_excludes "${config_file_path}" "${key}")        
+
           print_dependency_sync_title "${name}"
-          add_or_sync_dependency "${name}" "${url}" "${branch}" "${revision}"
+          add_or_sync_dependency "${name}" "${url}" "${branch}" "${revision}" "${includes}" "${excludes}"
           set_external_dependency_symlink "${name}"
           sync_at_least_one="true"
         else
@@ -601,7 +696,7 @@ remove_stale_git_external_deps() {
 
   print_stale_dependency_cleanup_title
   local declared_deps_paths_array=()
-  local external_folder_path=$(get_external_folder_path)
+  local external_folder_path=$(get_external_folder_from_content_root)
 
   # Create a strings array from all external git deps directories names
   for key in $(jq '.dependencies.repos | keys | .[]' "${config_file_path}"); do
@@ -618,7 +713,7 @@ remove_stale_git_external_deps() {
     # Check if array of external git deps does not contain the dependency
     if [[ "${declared_deps_paths_array[*]}" != "${existing_dep_dir_path}" ]]; then
         local existing_dep_name=$(basename "${existing_dep_dir_path}")
-        if [[ ! -z "${existing_dep_name}" && -d "${existing_dep_dir_path}" ]]; then
+        if [[ -n "${existing_dep_name}" && -d "${existing_dep_dir_path}" ]]; then
           log_info "Removing git dependency. name: ${existing_dep_name}"
           rm -rf "${existing_dep_dir_path}"
           removed_at_least_one="true"
@@ -637,7 +732,7 @@ remove_stale_git_external_symlinks() {
 
   print_stale_symlinks_cleanup_title
   local declared_deps_symlink_paths_array=()
-  local external_folder_symlink_path=$(get_external_folder_symlink_path)
+  local external_folder_symlink_path=$(get_external_folder_from_content_root)
 
   # Create a strings array from all external symlink folder directories names
   for key in $(jq '.dependencies.repos | keys | .[]' "${config_file_path}"); do
@@ -654,7 +749,7 @@ remove_stale_git_external_symlinks() {
     # Check if array of external git symlinks does not contain the dependency
     if [[ "${declared_deps_symlink_paths_array[*]}" != "${existing_dep_symlink_path}" ]]; then
         local existing_dep_symlink_name=$(basename "${existing_dep_symlink_path}")
-        if [[ ! -z "${existing_dep_symlink_name}" ]]; then
+        if [[ -n "${existing_dep_symlink_name}" ]]; then
           remove_symlink "${existing_dep_symlink_path}"
           removed_at_least_one="true"
         fi
@@ -667,7 +762,7 @@ remove_stale_git_external_symlinks() {
 }
 
 remove_stale_external_deps() {
-  local config_file_path=$(get_repos_config_file_path)
+  local config_file_path=$(get_config_path_from_content_root)
 
   # Clearing stale dependencies only for prod deps (non-dev local symlinks)
   if ! is_dev_dependencies; then
@@ -785,7 +880,7 @@ parse_program_arguments() {
 }
 
 print_deps_config_json_and_exit() {
-  local config_file_path=$(get_repos_config_file_path)
+  local config_file_path=$(get_config_path_from_content_root)
   jq '.dependencies.repos | .[]' "${config_file_path}"
   exit 0
 }
@@ -809,7 +904,7 @@ remove_symlink() {
 }
 
 clear_external_folder_symlinks_and_exit() {
-  local external_symlinks_folder_path=$(get_external_folder_symlink_path)
+  local external_symlinks_folder_path=$(get_external_folder_from_content_root)
   for dep_abs_path in "${external_symlinks_folder_path}"/* ; do
     # If directory is empty there is an empty iteration on a stale path, skip that
     if [[ "${dep_abs_path}" != "${external_symlinks_folder_path}/*" ]]; then
@@ -823,7 +918,7 @@ clear_external_folder_symlinks_and_exit() {
 
 clear_external_symlink_and_exit() {
   local dep_name=$1
-  local external_symlinks_folder_path=$(get_external_folder_symlink_path)
+  local external_symlinks_folder_path=$(get_external_folder_from_content_root)
   remove_symlink "${external_symlinks_folder_path}/${dep_name}"
   exit 0
 }
@@ -842,8 +937,8 @@ update_client_to_latest_and_exit() {
 print_cli_used_locations_and_exit() {
   echo -e "${COLOR_WHITE}LOCATIONS${COLOR_NONE}"
   echo -e "  • Config........: ${COLOR_GREEN}<PROJECT_ROOT_FOLDER>/${EXTERNAL_REPOS_JSON_PATH}${COLOR_NONE}"
-  echo -e "  • Repositories..: ${COLOR_GREEN}<PROJECT_ROOT_FOLDER>/${EXTERNAL_REPOS_FOLDER_PATH}${COLOR_NONE}"
-  echo -e "  • Symlinks......: ${COLOR_GREEN}<PROJECT_ROOT_FOLDER>/${EXTERNAL_REPOS_SYMLINK_PATH}${COLOR_NONE}"
+  echo -e "  • Repositories..: ${COLOR_GREEN}<PROJECT_ROOT_FOLDER>/${EXTERNAL_FOLDER_FROM_GIT_DEPS}${COLOR_NONE}"
+  echo -e "  • Symlinks......: ${COLOR_GREEN}<PROJECT_ROOT_FOLDER>/${EXTERNAL_FOLDER_FROM_CONTENT_ROOT}${COLOR_NONE}"
   echo -e "  • Clone Path....: ${COLOR_GREEN}${CACHED_REPO_CLONE_ROOT}${COLOR_NONE}"
   echo -e " "
   exit 0
@@ -878,7 +973,7 @@ prerequisites() {
 }
 
 verify_git_syncer_supported_repository() {
-  local config_file_path=$(get_repos_config_file_path)
+  local config_file_path=$(get_config_path_from_content_root)
   if [[ ! -f "${config_file_path}" ]]; then
     log_fatal "Not a valid git syncer supported repository (missing: <REPO_ROOT>/${EXTERNAL_REPOS_JSON_PATH})"
   fi
