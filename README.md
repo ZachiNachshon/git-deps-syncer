@@ -51,7 +51,7 @@ brew tap ZachiNachshon/tap
 brew install git-deps-syncer
 ```
 
-For additional installation methods [read here](docs/installation.md).
+For additional installation methods [read here](https://zachinachshon.com/git-deps-syncer/docs/latest/getting-started/download/).
 
 <br>
 
