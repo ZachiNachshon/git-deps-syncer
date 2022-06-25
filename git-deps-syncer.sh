@@ -180,7 +180,7 @@ print_instructions_syncer() {
 
     echo -e """${COLOR_YELLOW}
   ================================================================================================
-  This script syncs external git dependencies for the repository ${COLOR_GREEN}${repo_name}${COLOR_YELLOW}.
+  This script syncs external git dependencies for the repository '${COLOR_GREEN}${repo_name}${COLOR_YELLOW}'.
 
   What are dependencies?
   These are source dependant git repositories that are getting cloned locally and their files are
