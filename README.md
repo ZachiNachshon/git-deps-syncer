@@ -1,8 +1,4 @@
-<h3 id="logos" align="center">
-	<img src="assets/logo.png">
-	<br><br>
-	<p>Git Dependencies Syncer</p>
-</h3>
+<h3 align="center" id="git-deps-syncer-logo"><img src="docs-site/site/static/docs/latest/assets/brand/git-deps-syncer-readme.svg" height="300"></h3>
 
 <p align="center">
   <a href="https://opensource.org/licenses/MIT">
@@ -24,7 +20,7 @@
 
 **git-deps-syncer** is a lightweight CLI tool used for syncing git repositories as external source dependencies into any working directory.
 
-It offers a simple alternative to git `submodule` / `subtree` by allowing a drop-in-replacement of any git repository as an immutable source dependency that is part of the actual working repository source code, files are located and managed within a dedicated `external` folder.
+It offers a simple alternative to git `submodule` / `subtree` by allowing a drop-in-replacement of any git repository as an immutable source dependency that is part of the actual working repository source code, files are located and managed within a dedicated `external` folder using symlinks.
 
 <br>
 
@@ -33,7 +29,7 @@ It offers a simple alternative to git `submodule` / `subtree` by allowing a drop
 - A Unix-like operating system: macOS, Linux
 - `git` (recommended `v2.30.0` or higher)
 - `jq` (for parsing JSON based config)
-- `gh` (**Optional:** GitHub client for opening PRs upon changes)
+- gh` (**Optional:** GitHub client for opening PRs upon changes)
 
 <br>
 
@@ -63,16 +59,12 @@ For additional installation methods [read here](docs/installation.md).
 
 - [Why creating `git-deps-syncer`?](#why-creating)
 - [How does it work?](#how-does-it-work)
-  - [Configuration](#config)
   - [Initial sync](#initial-sync)
-  - [Dependencies structure](#deps-structure)
-  - [Live demo](#live-demo)
-- [Available commands](#commands)
-- [Other installation methods](docs/installation.md)
+- [Documentation](#documentation)
 
 **Maintainers / Contributors:**
 
-- [Contribute guides](docs/contribute.md)
+- [Contribute guides](https://zachinachshon.com/git-deps-syncer/docs/latest/getting-started/contribute/)
 
 <br>
 
@@ -98,55 +90,11 @@ Those are some of the requirements that lead me to implement a custom solution i
 
 <br>
 
-**Important locations:**
-
-| **Item**          | **Location**                                                 |
-| :------------------- | :----------------------------------------------------------- |
-| Config file          | `<PROJECT_ROOT_FOLDER>/.git-deps/config.json`       |
-| Repositories files | `<PROJECT_ROOT_FOLDER>/.git-deps/external/`       |
-| Symlinks             | `<PROJECT_ROOT_FOLDER>/external/`                  |
-| Repositories clone path | `${HOME}/.git-deps-cache/` |
-
-<br>
-
-<h4 id="config">Configuration</h4>
-
-`git-deps-syncer` relies on a `config.json` file for defining which git repositories it should fetch and treat as external dependencies. The content of the file is as follows:
-
-```json
-{
-  "dependencies": {
-    "repos": [
-      {
-        "name": "REPOSITORY_NAME",
-        "url": "https://github.com/<organization>/REPOSITORY_NAME.git",
-        "branch": "master",
-        "revision": "ab23fdr87..."
-      }
-    ]
-  },
-  "devDependencies": {
-    "repos": [
-      {
-        "name": "REPOSITORY_NAME",
-        "localPath": "/path/to/local/clone/of/REPOSITORY_NAME"
-      }
-    ]
-  }
-}
-```
-
-| :bulb: Note                                                  |
-| :----------------------------------------------------------- |
-| The `--save-dev` flag allows to create symlinks for specific local repositories paths as declared under `devDependencies`, it is indended for local development and can be used in conjunction with the rest of the git repositories as declared under `dependencies`. |
-
-<br>
-
 <h4 id="initial-sync">Initial Sync</h4>
 
-1. Change directory into any working directory you plan to add git depdencies to
+1. Change directory into a working repository you plan to add the git depdencies
 
-1. Create a `.git-deps/config.json` file by running:
+1. Auto generate a `.git-deps/config.json` file by running:
 
    ```bash
    git-deps-syncer init
@@ -167,61 +115,9 @@ Those are some of the requirements that lead me to implement a custom solution i
 
 <br>
 
-<h4 id="deps-structure">Dependencies Structure</h4>
+<h3 id="documentation">📖 Documentation</h3>
 
-```
-├── ...
-├── .git-deps                    # Managed folder used by the git-deps-syncer CLI utility
-│   └── external                 # Location of the external git repositories source code (no git index)
-│       ├── dependency-1         # Source code for repository: git@github.com:<organization>/dependency-1.git
-│       ├── dependency-2         # Source code for repository: git@github.com:<organization>/dependency-2.git
-│       └── ... 
-│   └── config.json              # Config file that defines which are the registered git repositories for this project
-├── ...
-├── external                     # Location of symlinks pointing to actual git external dependencies source code
-│   ├── dependency-1 (symlink)   # Links to --> .git-deps/external/dependency-1
-│   ├── dependency-2 (symlink)   # Links to --> .git-deps/external/dependency-2
-│   └── ...
-└── ...
-```
-
-<br>
-
-<h4 id="live-demo">Live Demo</h4>
-
-This is a live demo showcasing a `sync-all` action, fetching multiple git repositories as external dependencies.
-
-<details><summary>Show</summary>
-<img style="vertical-align: top;" src="assets/git.png" width="200" >
-</details>
-<br>
-
-<h3 id="commands">Available Commands</h3>
-
-Arguments:
-
-| **Name**       | **Description** |
-| :------------- | :------- |
-| `sync-all`     | Sync external git dependencies based on revisions declared on `.git-deps/config.json` |
-| `sync [name]`  | Sync a specific external git dependency based on revisions declared on `.git-deps/config.json` |
-| `show`         | Print the external git `dependencies` from the JSON config file |
-| `clear-all`    | Remove all symlinks from external folder |
-| `clear [name]` | Remove a specific symlink from external folder |
-| `locations`    | Print locations used for `config` / `repositories` / `symlinks` / `clone-path` |
-| `init`         | create an empty .git-deps folder with a config.json template file |
-| `update`       | Update client to latest version |
-| `version`      | Print deps-syncer client versions |
-
-Global Flags:
-
-| **Name**           | **Type**                                                     |
-| :----------------- | :----------------------------------------------------------- |
-| `-h (--help)`      | Show available actions and their description                 |
-| `-v (--verbose)`   | Output debug logs for deps-syncer client commands executions |
-| `-s (--silent)`    | Do not output logs for deps-syncer client commands executions |
-| `-y`               | Do not prompt for approval and accept everything             |
-| `--save-dev`       | Sync `devDependencies` local symlinks as declared on `.git-deps/config.json` |
-| `--open-github-pr` | Open a GitHub PR for git changes after running `sync-all`    |
+Please refer to the [documentation](https://zachinachshon.com/git-deps-syncer/docs/latest/getting-started/introduction/) for detailed explanation on how to configure and use `git-deps-syncer`.
 
 <br>
 
@@ -229,7 +125,7 @@ Global Flags:
 
 `git-deps-syncer` is an open source project that is currently self maintained in addition to my day job, you are welcome to show your appreciation by sending me cups of coffee using the the following link as it is a known fact that it is the fuel that drives software engineering ☕
 
-<a href="https://www.buymeacoffee.com/ZachiNachshon" target="_blank"><img src="assets/bmc-orig.svg" height="57" width="200" alt="Buy Me A Coffee"></a>
+<a href="https://www.buymeacoffee.com/ZachiNachshon" target="_blank"><img src="docs-site/site/static/docs/latest/assets/img/bmc-orig.svg" height="57" width="200" alt="Buy Me A Coffee"></a>
 
 <br>
 

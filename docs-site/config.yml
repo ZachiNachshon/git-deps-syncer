@@ -1,0 +1,72 @@
+languageCode:           "en"
+title:                  "Git-Deps-Syncer"
+baseURL:                "https://zachinachshon.com/git-deps-syncer/"
+canonifyURLs: true
+
+security:
+  enableInlineShortcodes: true
+  funcs:
+    getenv:
+      - ^HUGO_
+
+markup:
+  goldmark:
+    renderer:
+      unsafe:           true
+  highlight:
+    noClasses:          false
+  tableOfContents:
+    startLevel:         2
+    endLevel:           6
+
+buildDrafts:            true
+buildFuture:            true
+
+enableRobotsTXT:        true
+metaDataFormat:         "yaml"
+disableKinds:           ["404", "taxonomy", "term", "RSS"]
+
+publishDir:             "_site"
+
+module:
+  mounts:
+    - source:           dist
+      target:           static/docs/latest/dist
+    - source:           site/assets
+      target:           assets
+    - source:           site/content
+      target:           content
+    - source:           site/data
+      target:           data
+    - source:           site/layouts
+      target:           layouts
+    - source:           site/static
+      target:           static
+    - source:           site/static/docs/latest/assets/img/favicons/apple-touch-icon.png
+      target:           static/apple-touch-icon.png
+    - source:           site/static/docs/latest/assets/img/favicons/favicon.ico
+      target:           static/favicon.ico
+
+params:
+  description:          "Create Dynamic CLI's as your GitOps Marketplace."
+  authors:              "Zachi Nachshon"
+  social_image_path:    /docs/latest/assets/brand/git-deps-syncer-social.png
+  social_logo_path:     /docs/latest/assets/brand/git-deps-syncer-social-logo.png
+  google_analytics:     "G-MHVRYQ36MN"
+
+  current_version:      "0.3.0"
+  docs_version:         "latest"
+  go_version:           "1.18"
+  github_org:           "https://github.com/ZachiNachshon"
+  repo:                 "https://github.com/ZachiNachshon/git-deps-syncer"
+  twitter:              "zachinachshon"
+  slack:                "https://SLACK_URL"
+  blog:                 "https://zachi-nachshon.medium.com/"
+
+  download:
+    source:             "https://github.com/ZachiNachshon/git-deps-syncer/archive/v0.3.0.zip"
+    dist:               "https://github.com/ZachiNachshon/git-deps-syncer/releases"
+
+  anchors:
+    min: 2
+    max: 5
