@@ -1,18 +1,18 @@
 {
   "name": "git-deps-syncer",
-  "description": "Create Dynamic CLI's as your GitOps Marketplace.",
+  "description": "Sync git repositories as external source dependencies.",
   "version": "0.3.0",
   "config": {
     "version_short": "0.3.0"
   },
   "keywords": [
-    "cli",
-    "marketplace", 
-    "version-control", 
-    "dynamic",
-    "generic",
-    "local-environment",
-    "ci"
+    "git",
+    "shell", 
+    "sync", 
+    "dependency-manager",
+    "dependencies",
+    "source-code",
+    "repositories"
   ],
   "homepage": "https://zachinachshon.com/git-deps-syncer/",
   "author": "Zachi Nachshon",

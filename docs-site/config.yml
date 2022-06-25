@@ -48,7 +48,7 @@ module:
       target:           static/favicon.ico
 
 params:
-  description:          "Create Dynamic CLI's as your GitOps Marketplace."
+  description:          "Sync git repositories as external source dependencies."
   authors:              "Zachi Nachshon"
   social_image_path:    /docs/latest/assets/brand/git-deps-syncer-social.png
   social_logo_path:     /docs/latest/assets/brand/git-deps-syncer-social-logo.png
