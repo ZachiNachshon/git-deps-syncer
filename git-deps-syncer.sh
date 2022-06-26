@@ -494,28 +494,22 @@ _set_dependency_symlink() {
       unlink "${dep_symlink_path}"
       if is_debug; then
         echo """
-        ln -sf "../${dep_path}" "${dep_symlink_path}"
+        ln -sf "${dep_path}" "${dep_symlink_path}"
         """
       fi
-
-      # Must use relative path to the repo content root for the symlink to 
-      # stay valid on other system such as GitHub
-      ln -sf "../${dep_path}" "${dep_symlink_path}"
-
+      ln -sf "${dep_path}" "${dep_symlink_path}"
     else
       log_info "Dependency ${dep_type}is symlinked to expected target. name: ${dep_name}, path: ${dep_path}"
     fi
+
   else
     log_info "Creating a symlink to ${dep_type}dependency. name: ${dep_name}, path: ${dep_path}"
     if is_debug; then
       echo """
-      ln -sf "../${dep_path}" "${dep_symlink_path}"
+      ln -sf "${dep_path}" "${dep_symlink_path}"
       """
     fi
-
-    # Must use relative path to the repo content root for the symlink to 
-    # stay valid on other system such as GitHub
-    ln -sf "../${dep_path}" "${dep_symlink_path}"
+    ln -sf "${dep_path}" "${dep_symlink_path}"
 
   fi
 }
@@ -529,7 +523,9 @@ set_external_dev_dependency_symlink() {
 set_external_dependency_symlink() {
   local dep_name=$1
   local dep_path=$(get_dep_path_from_git_deps "${dep_name}")
-  _set_dependency_symlink "${dep_name}" "${dep_path}"
+  # Must use relative path to the repo content root for the symlink to 
+  # stay valid on other system such as GitHub
+  _set_dependency_symlink "${dep_name}" "../${dep_path}"
 }
 
 extract_repo_name_from_repo_url() {
