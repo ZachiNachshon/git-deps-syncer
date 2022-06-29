@@ -11,3 +11,4 @@ toc: true
 Repositories that are using `git-deps-syncer` for managing their git dependencies as 3rd parties:
 
 - <a href="https://github.com/ZachiNachshon/anchor" target="_blank">anchor</a>
+- <a href="https://github.com/ZachiNachshon/git-deps-syncer" target="_blank">git-deps-syncer</a> (dogfooding)

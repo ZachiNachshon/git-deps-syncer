@@ -29,7 +29,7 @@ It offers a simple alternative to git `submodule` / `subtree` by allowing a drop
 - A Unix-like operating system: macOS, Linux
 - `git` (recommended `v2.30.0` or higher)
 - `jq` (for parsing JSON based config)
-- gh` (**Optional:** GitHub client for opening PRs upon changes)
+- `gh` (**Optional:** GitHub client for opening PRs upon changes)
 
 <br>
 
