@@ -8,6 +8,7 @@ COLOR_LIGHT_CYAN='\033[0;36m'
 COLOR_NONE='\033[0m'
 
 CLI_OPTION_SILENT=""
+CLI_OPTION_DRY_RUN=""
 
 exit_on_error() {
   exit_code=$1
@@ -20,7 +21,18 @@ exit_on_error() {
 }
 
 is_silent() {
-  [[ ! -z ${CLI_OPTION_SILENT} ]]
+  [[ -n ${CLI_OPTION_SILENT} ]]
+}
+
+is_dry_run() {
+  [[ -n ${CLI_OPTION_DRY_RUN} ]]
+}
+
+evaluate_dry_run_mode() {
+  if is_dry_run; then
+    echo -e "${COLOR_YELLOW}Running in DRY RUN mode${COLOR_NONE}" >&2
+    new_line
+  fi 
 }
 
 _log_base() {
@@ -30,23 +42,41 @@ _log_base() {
 }
 
 log_info() {
+  local info_level_txt="INFO"
+  if is_dry_run; then
+    info_level_txt+=" (Dry Run)"
+  fi
+
   if ! is_silent; then
-    _log_base "${COLOR_GREEN}INFO${COLOR_NONE}: " "$@"
+    _log_base "${COLOR_GREEN}${info_level_txt}${COLOR_NONE}: " "$@"
   fi
 }
 
 log_warning() {
+  local warn_level_txt="WARNING"
+  if is_dry_run; then
+    warn_level_txt+=" (Dry Run)"
+  fi
+
   if ! is_silent; then
-    _log_base "${COLOR_YELLOW}WARNING${COLOR_NONE}: " "$@"
+    _log_base "${COLOR_YELLOW}${warn_level_txt}${COLOR_NONE}: " "$@"
   fi
 }
 
 log_error() {
-  _log_base "${COLOR_RED}ERROR${COLOR_NONE}: " "$@"
+  local error_level_txt="ERROR"
+  if is_dry_run; then
+    error_level_txt+=" (Dry Run)"
+  fi
+  _log_base "${COLOR_RED}${error_level_txt}${COLOR_NONE}: " "$@"
 }
 
 log_fatal() {
-  _log_base "${COLOR_RED}ERROR${COLOR_NONE}: " "$@"
+  local fatal_level_txt="ERROR"
+  if is_dry_run; then
+    fatal_level_txt+=" (Dry Run)"
+  fi
+  _log_base "${COLOR_RED}${fatal_level_txt}${COLOR_NONE}: " "$@"
   message="$@"
   exit_on_error 1 "${message}"
 }

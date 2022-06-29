@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Make sure to update the version as-well on file: resources/version.txt
-VERSION="0.3.0"
+VERSION="0.4.0"
 
 # git-deps-syncer is a lightweight CLI tool used for syncing git repositories as
 # external source dependencies into any working directory.
