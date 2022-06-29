@@ -6,7 +6,6 @@ release_version_create: ## Create release tag in GitHub with version from resour
 	'action: create' \
 	'version_file_path: ./resources/version.txt' \
 	'artifact_file_path: git-deps-syncer.sh' \
-	'dry_run' \
 	'debug'"
 
 .PHONY: release_version_delete
