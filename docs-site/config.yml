@@ -54,7 +54,7 @@ params:
   social_logo_path:     /docs/latest/assets/brand/git-deps-syncer-social-logo.png
   google_analytics:     "G-MHVRYQ36MN"
 
-  current_version:      "0.3.0"
+  current_version:      "0.4.0"
   docs_version:         "latest"
   go_version:           "1.18"
   github_org:           "https://github.com/ZachiNachshon"
@@ -64,7 +64,7 @@ params:
   blog:                 "https://zachi-nachshon.medium.com/"
 
   download:
-    source:             "https://github.com/ZachiNachshon/git-deps-syncer/archive/v0.3.0.zip"
+    source:             "https://github.com/ZachiNachshon/git-deps-syncer/archive/v0.4.0.zip"
     dist:               "https://github.com/ZachiNachshon/git-deps-syncer/releases"
 
   anchors:
