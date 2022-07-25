@@ -16,10 +16,10 @@ Example of such project layout:
 ```text
 ├── ...
 ├── .git-deps                       # Managed folder used by the git-deps-syncer CLI
-│   └── external                    # Location of the external git repositories source code (no git index)
-│       ├── shell_scripts_lib       # Source code for repository: git@github.com:<organization>/shell_scripts_lib.git
-│       ├── python_scripts_lib      # Source code for repository: git@github.com:<organization>/python_scripts_lib.git
-│       └── ...       
+│   ├── external                    # Location of the external git repositories source code (no git index)
+│   │   ├── shell_scripts_lib       # Source code for repository: git@github.com:<organization>/shell_scripts_lib.git
+│   │   ├── python_scripts_lib      # Source code for repository: git@github.com:<organization>/python_scripts_lib.git
+│   │   └── ...       
 │   └── config.json                 # Config file that defines which are the registered git repositories for this project
 ├── ...
 ├── <additional-files-and-folders>

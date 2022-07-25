@@ -85,10 +85,10 @@
       <p>Dependencies sources are saved into <code>.git-deps/external</code> folder, references to those files are via symlinks from the <code>external</code> folder.</p>
       {{ highlight (printf `├── ...
 ├── .git-deps                   
-│   └── external               
-│       ├── shell_scripts_lib  (sources)
-│       ├── python_scripts_lib (sources)
-│       └── ...       
+│   ├── external               
+│   │   ├── shell_scripts_lib  (sources)
+│   │   ├── python_scripts_lib (sources)
+│   │   └── ...       
 │   └── config.json                
 ├── ...
 ├── <additional-files-and-folders>
