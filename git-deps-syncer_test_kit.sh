@@ -6,7 +6,6 @@ GDS_SHOW_REPOS_JSON='{
   "branch": "master",
   "revision": "%s",
   "includes": [
-    "*/",
     "parent_folder*/",
     "parent_folder/child_folder*"
   ],
@@ -20,7 +19,6 @@ GDS_SHOW_REPOS_JSON='{
   "branch": "master",
   "revision": "%s",
   "includes": [
-    "*/",
     "parent_folder*/",
     "parent_folder/child_folder*"
   ],
