@@ -1,5 +1,28 @@
 default: help
 
+.PHONY: create_tarball
+create_tarball: ## Create a tarball from local repository
+	@tar \
+	--exclude='./.git' \
+	--exclude='./.github' \
+	--exclude='test_data/' \
+	--exclude='*_test_kit*' \
+	--exclude='*_test*' \
+	--exclude='docs-site/' \
+	--exclude='formula.rb' \
+	--exclude='git-deps-syncer.tar.gz' \
+	-zcf git-deps-syncer.tar.gz \
+	.
+
+.PHONY: install_from_respository
+install_from_respository: create_tarball ## Install a local dotfiles CLI from this repository
+	@LOCAL_ARCHIVE_FILEPATH=$(CURDIR)/git-deps-syncer.tar.gz ./install.sh
+	@rm -rf $(CURDIR)/git-deps-syncer.tar.gz
+
+.PHONY: uninstall
+uninstall: ## Uninstall a local dotfiles CLI
+	@./uninstall.sh
+
 .PHONY: release_version_create
 release_version_create: ## Create release tag in GitHub with version from resources/version.txt
 	@sh -c "'$(CURDIR)/external/shell_scripts_lib/github/release.sh' \
@@ -36,6 +59,17 @@ serve_docs_site: ## Run a local site
 .PHONY: serve_docs_site_lan
 serve_docs_site_lan: ## Run a local site (open for LAN)
 	@cd docs-site && npm run docs-serve-lan
+
+.PHONY: test
+test: ## Run tests suite
+	@sh -c "$(CURDIR)/git-deps-syncer_test.sh"
+
+.PHONY: fmt
+fmt: ## Format shell scripts using shfmt bash style (https://github.com/mvdan/sh)
+	@sh -c "'$(CURDIR)/external/shell_scripts_lib/runner/shfmt/shfmt.sh' \
+  		'working_dir: $(CURDIR)' \
+  		'shfmt_args: -w -ci -i=2 -ln=bash $(CURDIR)' \
+  		'debug'"
 
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

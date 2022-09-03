@@ -9,6 +9,9 @@
 CONFIG_FOLDER_PATH="${HOME}/.config"
 GIT_DEPS_SYNCER_CLI_INSTALL_PATH=${GIT_DEPS_SYNCER_CLI_INSTALL_PATH:-"${CONFIG_FOLDER_PATH}/git-deps-syncer"}
 
+# Path of the repository to add/remove git dependencies to/from
+GIT_DEPS_REPO_WORKING_PATH=${GIT_DEPS_REPO_WORKING_PATH:-$(PWD)}
+
 GIT_DEPS_SYNCER_CURRENT_FOLDER_ABS_PATH=$(dirname "$(readlink "${BASH_SOURCE[0]}")")
 
 # Path resolution to support Homebrew installation.
@@ -38,11 +41,10 @@ source "${GIT_DEPS_SYNCER_CURRENT_FOLDER_ABS_PATH}/external/shell_scripts_lib/pr
 source "${GIT_DEPS_SYNCER_CURRENT_FOLDER_ABS_PATH}/external/shell_scripts_lib/shell.sh"
 source "${GIT_DEPS_SYNCER_CURRENT_FOLDER_ABS_PATH}/external/shell_scripts_lib/os.sh"
 
-GIT_DEPS_MANAGED_FOLDER=".git-deps"
+GIT_DEPS_FOLDER_NAME=".git-deps"
 GIT_DEPS_CONFIG_FILENAME="config.json"
-EXTERNAL_REPOS_JSON_PATH="${GIT_DEPS_MANAGED_FOLDER}/${GIT_DEPS_CONFIG_FILENAME}"
-EXTERNAL_REPOS_JSON_PATH="${GIT_DEPS_MANAGED_FOLDER}/${GIT_DEPS_CONFIG_FILENAME}"
-EXTERNAL_FOLDER_FROM_GIT_DEPS="${GIT_DEPS_MANAGED_FOLDER}/external"
+EXTERNAL_REPOS_JSON_PATH="${GIT_DEPS_FOLDER_NAME}/${GIT_DEPS_CONFIG_FILENAME}"
+EXTERNAL_FOLDER_FROM_GIT_DEPS="${GIT_DEPS_FOLDER_NAME}/external"
 EXTERNAL_FOLDER_FROM_CONTENT_ROOT="external"
 CACHED_REPO_CLONE_ROOT="${HOME}/.git-deps-syncer-cache"
 
@@ -108,37 +110,47 @@ get_cached_repo_clone_path() {
   echo "${CACHED_REPO_CLONE_ROOT}/${repo_name}"
 }
 
-get_external_folder_from_git_deps() {
-  echo "${EXTERNAL_FOLDER_FROM_GIT_DEPS}"
-}
+# get_external_folder_abs_from_git_deps() {
+#   echo "${GIT_DEPS_REPO_WORKING_PATH}/${EXTERNAL_FOLDER_FROM_GIT_DEPS}"
+# }
 
-get_dep_path_from_git_deps() {
+get_git_deps_dep_relative_path() {
   local dep_name=$1
-  echo "${EXTERNAL_FOLDER_FROM_GIT_DEPS}/${dep_name}"
+  echo "../${EXTERNAL_FOLDER_FROM_GIT_DEPS}/${dep_name}"
 }
 
-get_external_folder_from_content_root() {
-  echo "${EXTERNAL_FOLDER_FROM_CONTENT_ROOT}"
+get_git_deps_dep_abs_path() {
+  local dep_name=$1
+  echo "${GIT_DEPS_REPO_WORKING_PATH}/${EXTERNAL_FOLDER_FROM_GIT_DEPS}/${dep_name}"
 }
 
-get_external_dep_symlink_from_content_root() {
+get_external_folder_symlink_abs_path() {
+  echo "${GIT_DEPS_REPO_WORKING_PATH}/${EXTERNAL_FOLDER_FROM_CONTENT_ROOT}"
+}
+
+get_external_dep_symlink_abs_path() {
+  local dep_name=$1
+  echo "${GIT_DEPS_REPO_WORKING_PATH}/${EXTERNAL_FOLDER_FROM_CONTENT_ROOT}/${dep_name}"
+}
+
+get_external_dep_symlink_relative_path() {
   local dep_name=$1
   echo "${EXTERNAL_FOLDER_FROM_CONTENT_ROOT}/${dep_name}"
 }
 
 get_config_path_from_content_root() {
-  echo "${EXTERNAL_REPOS_JSON_PATH}"
+  echo "${GIT_DEPS_REPO_WORKING_PATH}/${EXTERNAL_REPOS_JSON_PATH}"
 }
 
 open_github_pr() {
 #  local short_revision=$(echo ${revision} | cut -c 1-7)
 
   if should_open_github_pr && ! is_dev_dependencies; then
-#    local external_folder_path=$(get_external_folder_from_content_root)
+#    local external_folder_path=$(get_external_folder_symlink_abs_path)
 #    log_info "Creating a PR from dependency vector update. name: ${dep_name}_${short_revision}"
 #    git add "${external_folder_path}" --all
 
-#    local external_folder_symlink_path=$(get_external_folder_from_content_root)
+#    local external_folder_symlink_path=$(get_external_folder_symlink_abs_path)
 #    git add "${external_folder_symlink_path}" --all
 
     # Create branch
@@ -150,12 +162,12 @@ open_github_pr() {
 
 print_help_menu_and_exit() {
   local exec_filename=$1
-  echo -e " "
+  echo -e ""
   echo -e "${SCRIPT_NAME} - Syncs git repos as external source dependencies into a working repository"
-  echo -e " "
+  echo -e ""
   echo -e "${COLOR_WHITE}USAGE${COLOR_NONE}"
   echo -e "  $(basename "${exec_filename}") [command] [flag]"
-  echo -e " "
+  echo -e ""
   echo -e "${COLOR_WHITE}AVAILABLE COMMANDS${COLOR_NONE}"
   echo -e "  ${COLOR_LIGHT_CYAN}sync-all${COLOR_NONE}                  Sync external git dependencies based on revisions declared on ${COLOR_GREEN}${GIT_DEPS_CONFIG_FILENAME}${COLOR_NONE}"
   echo -e "  ${COLOR_LIGHT_CYAN}sync${COLOR_NONE} <name>               Sync a specific external git dependency based on revisions declared on ${COLOR_GREEN}${GIT_DEPS_CONFIG_FILENAME}${COLOR_NONE}"
@@ -163,9 +175,9 @@ print_help_menu_and_exit() {
   echo -e "  ${COLOR_LIGHT_CYAN}clear-all${COLOR_NONE}                 Remove all symlinks from external folder"
   echo -e "  ${COLOR_LIGHT_CYAN}clear${COLOR_NONE} <name>              Remove a specific symlink from external folder"
   echo -e "  ${COLOR_LIGHT_CYAN}config${COLOR_NONE}                    Print config/paths/symlinks/clone-path"
-  echo -e "  ${COLOR_LIGHT_CYAN}init${COLOR_NONE}                      Create an empty ${COLOR_GREEN}${GIT_DEPS_MANAGED_FOLDER}${COLOR_NONE} folder with a ${COLOR_GREEN}${GIT_DEPS_CONFIG_FILENAME}${COLOR_NONE} template file"
+  echo -e "  ${COLOR_LIGHT_CYAN}init${COLOR_NONE}                      Create an empty ${COLOR_GREEN}${GIT_DEPS_FOLDER_NAME}${COLOR_NONE} folder with a ${COLOR_GREEN}${GIT_DEPS_CONFIG_FILENAME}${COLOR_NONE} template file"
   echo -e "  ${COLOR_LIGHT_CYAN}version${COLOR_NONE}                   Print deps-syncer client versions"
-  echo -e " "
+  echo -e ""
   echo -e "${COLOR_WHITE}FLAGS${COLOR_NONE}"
   echo -e "  ${COLOR_LIGHT_CYAN}--save-dev${COLOR_NONE}                Sync ${COLOR_GREEN}devDependencies${COLOR_NONE} local symlinks as declared on ${COLOR_GREEN}${GIT_DEPS_CONFIG_FILENAME}${COLOR_NONE}"
   echo -e "  ${COLOR_LIGHT_CYAN}--open-github-pr${COLOR_NONE}          Open a GitHub PR for git changes after running ${COLOR_GREEN}sync-all${COLOR_NONE}"
@@ -174,7 +186,7 @@ print_help_menu_and_exit() {
   echo -e "  ${COLOR_LIGHT_CYAN}-h${COLOR_NONE} (--help)               Show available actions and their description"
   echo -e "  ${COLOR_LIGHT_CYAN}-v${COLOR_NONE} (--verbose)            Output debug logs for deps-syncer client commands executions"
   echo -e "  ${COLOR_LIGHT_CYAN}-s${COLOR_NONE} (--silent)             Do not output logs for deps-syncer client commands executions"
-  echo -e " "
+  echo -e ""
   exit 0
 }
 
@@ -185,13 +197,13 @@ print_deps_config_json_and_exit() {
 }
 
 clear_all_external_dependencies_and_exit() {
-  local external_symlinks_folder_path=$(get_external_folder_from_content_root)
+  local external_symlinks_folder_path=$(get_external_folder_symlink_abs_path)
   clear_external_folder_symlinks "${external_symlinks_folder_path}"
   exit 0
 }
 
 clear_external_dependency_and_exit() {
-  local external_dep_symlink_path=$(get_external_dep_symlink_from_content_root "${CLI_VALUE_CLEAR_DEP_NAME}")
+  local external_dep_symlink_path=$(get_external_dep_symlink_abs_path "${CLI_VALUE_CLEAR_DEP_NAME}")
   clear_external_dependency_symlink "${external_dep_symlink_path}"
   exit 0
 }
@@ -207,9 +219,8 @@ sync_all_deps_and_exit() {
 }
 
 init_git_deps_directory_and_exit() {
-  run_init_command "${GIT_DEPS_MANAGED_FOLDER}" \
-    "${EXTERNAL_REPOS_JSON_PATH}" \
-    "${GIT_DEPS_CONFIG_FILENAME}"
+  run_init_command "${GIT_DEPS_REPO_WORKING_PATH}/${GIT_DEPS_FOLDER_NAME}" \
+    "${GIT_DEPS_REPO_WORKING_PATH}/${EXTERNAL_REPOS_JSON_PATH}"
   exit 0
 }
 
@@ -220,14 +231,14 @@ print_local_version_and_exit() {
 }
 
 print_config_and_exit() {
-  echo -e " "
+  echo -e ""
   echo -e "${COLOR_WHITE}LOCATIONS:${COLOR_NONE}"
-  echo -e " "
+  echo -e ""
   echo -e "  ${COLOR_LIGHT_CYAN}Config${COLOR_NONE}........: <REPO_ROOT_FOLDER>/${EXTERNAL_REPOS_JSON_PATH}"
   echo -e "  ${COLOR_LIGHT_CYAN}Repositories${COLOR_NONE}..: <REPO_ROOT_FOLDER>/${EXTERNAL_FOLDER_FROM_GIT_DEPS}"
   echo -e "  ${COLOR_LIGHT_CYAN}Symlinks${COLOR_NONE}......: <REPO_ROOT_FOLDER>/${EXTERNAL_FOLDER_FROM_CONTENT_ROOT}"
   echo -e "  ${COLOR_LIGHT_CYAN}Clone Path${COLOR_NONE}....: ${CACHED_REPO_CLONE_ROOT}"
-  echo -e " "
+  echo -e ""
   exit 0
 }
 
@@ -331,7 +342,7 @@ verify_program_arguments() {
     log_fatal "Missing/invalid argument value. usage: sync [dep-name]"
   elif check_invalid_clear_dep_value; then
     # Verify proper command args ordering: dotfiles clear <name> --dry-run -v
-    log_fatal "Missing argument value. usage: clear [dep-name]"
+    log_fatal "Missing/invalid argument value. usage: clear [dep-name]"
   fi
 }
 

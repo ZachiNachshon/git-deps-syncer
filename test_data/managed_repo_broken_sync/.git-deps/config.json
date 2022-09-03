@@ -1,0 +1,22 @@
+{
+  "dependencies": {
+    "repos": [
+      {
+        "name": "dummy_dep",
+        "url": "https://github.com/test/dummy_dep.git",
+        "branch": "master",
+        "revision": "1234abcd4321dcba",
+        "includes": ["*/"],
+        "excludes": ["*_tests*"]
+      }
+    ]
+  },
+  "devDependencies": {
+    "repos": [
+      {
+        "name": "dev_dummy_dep",
+        "localPath": "/path/to/dev_dummy_dep"
+      }
+    ]
+  }
+}
