@@ -156,6 +156,13 @@ clone_repository() {
   log_info "Cloning repository. url: ${dep_url}, branch: ${dep_branch}, revision: ${dep_revision}"
   cmd_run "git -C \"${clone_path}\" init --quiet"
   cmd_run "git -C \"${clone_path}\" fetch --depth 1 --force \"${dep_url}\" \"refs/heads/${dep_branch}\" --quiet"
+
+  # If revision cannot be found, stop the sync flow
+  local revision_found=$(cmd_run "git -C \"${clone_path}\" --no-pager branch --contains ${dep_revision} --quiet")
+  if ! is_dry_run && [[ "${revision_found}" == *error* ]]; then
+    log_fatal "Cannot identify revision. url: ${dep_url}, branch: ${dep_branch}, revision: ${dep_revision}"
+  fi
+
   cmd_run "git -C \"${clone_path}\" reset --hard \"${dep_revision}\" --quiet"
   cmd_run "git -C \"${clone_path}\" clean -xdf"
 }
@@ -171,6 +178,13 @@ sync_repository() {
 
   log_info "Fetching repository changes. url: ${dep_url}, branch: ${dep_branch}, revision: ${dep_revision}"
   cmd_run "git -C \"${clone_path}\" fetch --depth 1 --force \"${dep_url}\" \"refs/heads/${dep_branch}\" --quiet"
+
+  # If revision cannot be found, stop the sync flow to avoid deleting the the external dependency folder
+  local revision_found=$(cmd_run "git -C \"${clone_path}\" --no-pager branch --contains ${dep_revision} --quiet")
+  if ! is_dry_run && [[ "${revision_found}" == *error* ]]; then
+    log_fatal "Cannot identify revision. url: ${dep_url}, branch: ${dep_branch}, revision: ${dep_revision}"
+  fi
+
   cmd_run "git -C \"${clone_path}\" reset --hard "${dep_revision}" --quiet"
   cmd_run "git -C \"${clone_path}\" clean -xdf"
 
@@ -221,13 +235,15 @@ copy_repo_content_as_external_dependency() {
   # Must use an array for exclusions when running rsync from a script
   for (( i=0; i < ${#EXCLUDED_FILE_AND_DIRS_ARRAY[@]}; i++ )); do
     local item=${EXCLUDED_FILE_AND_DIRS_ARRAY[i]}
-    exclusion_array+=( --exclude=${item} )
+    exclusion_array+=( --exclude="${item}" )
   done
 
   if [[ -n "${includes}" && -n "${excludes}" ]]; then
-    exclusion_array+=( --exclude=*/ )
+    exclusion_array+=( --exclude="*/" )
   fi
 
+  # TO DEBUS RSYNC COMMAND ADD THE -vvv flag i.e. rsync -a -vvv ...
+   
   # Example used from the shell (in-process shouldn't have commas):
   #   rsync -a \
   #     --include='golang*/' \
@@ -244,7 +260,7 @@ copy_repo_content_as_external_dependency() {
   # 
   # Reason for using an array for both includes and excludes:
   #   https://stackoverflow.com/questions/69297946/rsync-ignores-exclude-options-being-run-in-bash-script
-  cmd_run "rsync -a \"${includes_array[@]} ${exclusion_array[@]}\" \"${clone_path}/\" \"${copy_path}/\""
+  cmd_run "rsync -a ${includes_array[*]} ${exclusion_array[*]} ${clone_path}/ ${copy_path}/"
 }
 
 check_or_create_external_folder_under_content_root() {
@@ -302,7 +318,7 @@ extract_repo_name_from_repo_url() {
 }
 
 # Prepare rsync includes from JSON array
-# ["one", "two", "three"] --> "--include=one --include=two --include=three"
+# ["one", "two", "three"] --> "--include='one' --include='two' --include='three'"
 extract_includes() {
   local config_file_path=$1
   local repo_key=$2
@@ -310,14 +326,14 @@ extract_includes() {
 
   for inc_key in $(jq ".dependencies.repos[${repo_key}].includes | keys | .[]" "${config_file_path}"); do
     include=$(jq -r ".dependencies.repos[${repo_key}].includes[$inc_key]" "${config_file_path}")
-    includes+=" --include=${include} "
+    includes+=" --include='${include}' "
   done
 
   echo "${includes}" | xargs
 }
 
 # Prepare rsync excludes from JSON array
-# ["one", "two", "three"] --> "--exclude=one --exclude=two --exclude=three"
+# ["one", "two", "three"] --> "--exclude='one' --exclude='two' --exclude='three'"
 extract_excludes() {
   local config_file_path=$1
   local repo_key=$2
@@ -325,7 +341,7 @@ extract_excludes() {
 
   for excl_key in $(jq ".dependencies.repos[${repo_key}].excludes | keys | .[]" "${config_file_path}"); do
     exclude=$(jq -r ".dependencies.repos[${repo_key}].excludes[$excl_key]" "${config_file_path}")
-    excludes+=" --exclude=${exclude} "
+    excludes+=" --exclude='${exclude}' "
   done
 
   echo "${excludes}" | xargs
