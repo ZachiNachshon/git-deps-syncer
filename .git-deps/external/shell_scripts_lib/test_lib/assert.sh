@@ -37,24 +37,12 @@ ${COLOR_RED}${text}${COLOR_NONE}"""
   return 1
 }
 
-assert_expect_log_contains_text() {
-  local text=$1
-  local default_msg="""Expected text not found - 
-${COLOR_RED}${text}${COLOR_NONE}"""
-  local message=${2:-${default_msg}}
-
-  is_string_contains_text "${text}" "$(cat ${TEST_log})" && return 0
-
-  test_log_fail "\nAssertion error: ${message}"
-  return 1
-}
-
 assert_not_expect_log() {
   local pattern=$1
   local default_msg="""Found a regexp pattern that should not exist - 
 ${COLOR_RED}${pattern}${COLOR_NONE}"""
   local message=${2:-${default_msg}}
-  grep -sq --files-without-match -- "${pattern}" "${TEST_log}" && return 0
+  grep -sqv -- "${pattern}" "${TEST_log}" && return 0
 
   test_log_fail "\nAssertion error: ${message}"
   return 1
