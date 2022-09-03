@@ -1,0 +1,34 @@
+{
+  "dependencies": {
+    "repos": [
+      {
+        "name": "dummy_dep_1",
+        "url": "https://github.com/test/dummy_dep_1.git",
+        "branch": "master",
+        "revision": "abcdefghijk",
+        "includes": ["*/", "parent_folder*/", "parent_folder/child_folder*"],
+        "excludes": ["*_tests*"]
+      },
+      {
+        "name": "dummy_dep_2",
+        "url": "https://github.com/test/dummy_dep_2.git",
+        "branch": "master",
+        "revision": "1234567890",
+        "includes": ["*/", "parent_folder*/", "parent_folder/child_folder*"],
+        "excludes": ["*_tests*"]
+      }
+    ]
+  },
+  "devDependencies": {
+    "repos": [
+      {
+        "name": "dev_dummy_dep_1",
+        "localPath": "/path/to/dev_dummy_dep_1"
+      },
+      {
+        "name": "dev_dummy_dep_2",
+        "localPath": "/path/to/dev_dummy_dep_2"
+      }
+    ]
+  }
+}

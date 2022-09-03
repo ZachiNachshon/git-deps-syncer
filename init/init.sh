@@ -36,24 +36,23 @@ get_config_template_json() {
 }
 
 run_init_command() {
-  local git_deps_managed_folder=$1
+  local git_deps_folder_path=$1
   local external_repos_json_path=$2
-  local git_deps_config_filename=$3
 
-  if ! is_directory_exist "${git_deps_managed_folder}"; then
-    log_info "Creating a managed folder. path: ${PWD}/${git_deps_managed_folder}"
-    cmd_run "mkdir -p ${git_deps_managed_folder}"
+  if ! is_directory_exist "${git_deps_folder_path}"; then
+    log_info "Creating a managed folder. path: ${git_deps_folder_path}"
+    cmd_run "mkdir -p ${git_deps_folder_path}"
   else
-    log_warning "Identified a managed folder. path: ${PWD}/${git_deps_managed_folder}"
+    log_warning "Identified a managed folder. path: ${git_deps_folder_path}"
   fi
 
   if ! is_file_exist "${external_repos_json_path}"; then
-    log_info "Creating a ${git_deps_config_filename} template. path: ${PWD}/${external_repos_json_path}"
+    log_info "Creating a git-deps template. path: ${external_repos_json_path}"
     cmd_run "cat > ${external_repos_json_path} << EOF
 $(get_config_template_json)
 EOF"
     log_info "To list all declared git external dependencies run: git-deps-syncer show"
   else
-    log_warning "Found an existing ${git_deps_config_filename} file. path: ${PWD}/${external_repos_json_path}"
+    log_warning "Found an existing git-deps config file. path: ${external_repos_json_path}"
   fi
 }
