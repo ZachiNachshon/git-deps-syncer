@@ -6,7 +6,7 @@
         "url": "https://github.com/test/dummy_dep.git",
         "branch": "master",
         "revision": "1234abcd4321dcba",
-        "includes": ["*/"],
+        "includes": ["dummy*/"],
         "excludes": ["*_tests*"]
       }
     ]
