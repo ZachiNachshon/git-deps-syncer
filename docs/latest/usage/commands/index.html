@@ -365,16 +365,12 @@
 <td>Remove a specific symlink from external folder</td>
 </tr>
 <tr>
-<td><code>locations</code></td>
-<td>Print locations used for config/repositories/symlinks/clone-path</td>
+<td><code>config</code></td>
+<td>Print config / paths / symlinks / clone-path</td>
 </tr>
 <tr>
 <td><code>init</code></td>
 <td>Create an empty <strong>.git-deps</strong> folder with a <strong>config.json</strong> template file</td>
-</tr>
-<tr>
-<td><code>update</code></td>
-<td>Update client to latest version</td>
 </tr>
 <tr>
 <td><code>version</code></td>
@@ -394,6 +390,22 @@
 </thead>
 <tbody>
 <tr>
+<td><code>--save-dev</code></td>
+<td>Sync <strong>devDependencies</strong> local symlinks as declared on <strong>config.json</strong></td>
+</tr>
+<tr>
+<td><code>--open-github-pr</code></td>
+<td>Open a GitHub PR for git changes after running <strong>sync-all</strong></td>
+</tr>
+<tr>
+<td><code>--dry-run</code></td>
+<td>Run all commands in dry-run mode <strong>without file system changes</strong></td>
+</tr>
+<tr>
+<td><code>-y</code></td>
+<td>Do not prompt for approval and accept everything</td>
+</tr>
+<tr>
 <td><code>-h (--help)</code></td>
 <td>Show available actions and their description</td>
 </tr>
@@ -405,26 +417,10 @@
 <td><code>-s (--silent)</code></td>
 <td>Do not output logs for deps-syncer client commands executions</td>
 </tr>
-<tr>
-<td><code>-y</code></td>
-<td>Do not prompt for approval and accept everything</td>
-</tr>
-<tr>
-<td><code>--save-dev</code></td>
-<td>Sync <strong>devDependencies</strong> local symlinks as declared on <strong>config.json</strong></td>
-</tr>
-<tr>
-<td><code>--open-github-pr</code></td>
-<td>Open a GitHub PR for git changes after running <strong>sync-all</strong></td>
-</tr>
 </tbody>
 </table></div>
 
-<br>
-<p>Example of a user prompt message upon <code>sync-all</code>:</p>
-<div class="col-lg-6">
-   <img style="vertical-align: top;" src="https://zachinachshon.com/git-deps-syncer/docs/latest/assets/img/sync-all-prompt-message.svg" width="800" >
-</div>
+
       </div>
     </main>
   </div>
@@ -475,8 +471,8 @@
         <h5>Community</h5>
         <ul class="list-unstyled">
           <li class="mb-2"><a href="https://github.com/ZachiNachshon/git-deps-syncer/issues" target="_blank">Issues</a></li>
+          <li class="mb-2"><a href="https://github.com/sponsors/ZachiNachshon" target="_blank">Sponsorship</a></li>
           
-          <li class="mb-2"><a href="https://www.paypal.com/paypalme/ZachiNachshon" target="_blank">Sponsorship</a></li>
           
         </ul>
       </div>

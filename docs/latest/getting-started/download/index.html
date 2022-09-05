@@ -330,6 +330,7 @@
     </li>
     <li><a href="#released-version">Released Version</a></li>
     <li><a href="#pre-built-release">Pre-Built Release</a></li>
+    <li><a href="#uninstall">Uninstall</a></li>
   </ul>
 </nav>
           </div>
@@ -356,46 +357,34 @@
 </code></pre></div></li>
 </ol>
 <h2 id="released-version">Released Version <a class="anchor-link" href="#released-version" aria-label="Link to this section: Released Version"></a></h2>
-<ol>
-<li>Download and install <code>git-deps-syncer</code> executable (copy &amp; paste into a terminal):</li>
-</ol>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">bash <span class="s">&lt;&lt;&#39;EOF&#39;
-</span><span class="s">
-</span><span class="s"># Change Version accordingly
-</span><span class="s">VERSION=0.1.0
-</span><span class="s">
-</span><span class="s"># Create a temporary folder
-</span><span class="s">download_temp_path=$(mktemp -d ${TMPDIR:-/tmp}/git-deps-syncer-temp.XXXXXX)
-</span><span class="s">cwd=$(pwd)
-</span><span class="s">cd ${download_temp_path}
-</span><span class="s">
-</span><span class="s"># Download &amp; extract
-</span><span class="s">echo -e &#34;\nDownloading git-deps-syncer to temp directory...\n&#34;
-</span><span class="s">curl -SL &#34;https://github.com/ZachiNachshon/git-deps-syncer/releases/download/v${VERSION}/git-deps-syncer.sh&#34;
-</span><span class="s">
-</span><span class="s"># Create a dest directory and move the binary
-</span><span class="s">echo -e &#34;\nMoving executable to ~/.local/bin&#34;
-</span><span class="s">mkdir -p ${HOME}/.local/bin; mv git-deps-syncer.sh ${HOME}/.local/bin
-</span><span class="s">
-</span><span class="s"># Create a dest directory and move the binary
-</span><span class="s">echo &#34;Elevating exec permissions (might prompt for password)&#34;
-</span><span class="s">chmod +x ${HOME}/.local/bin/git-deps-syncer.sh
-</span><span class="s">
-</span><span class="s"># Add this line to your *rc file (zshrc, bashrc etc..) to make git-deps-syncer available on new sessions
-</span><span class="s">echo &#34;Exporting ~/.local/bin (make sure to have it available on PATH)&#34;
-</span><span class="s">export PATH=&#34;${PATH}:${HOME}/.local/bin&#34;
-</span><span class="s">
-</span><span class="s">cd ${cwd}
-</span><span class="s">
-</span><span class="s"># Cleanup
-</span><span class="s">if [[ ! -z ${download_temp_path} &amp;&amp; -d ${download_temp_path} &amp;&amp; ${download_temp_path} == *&#34;git-deps-syncer-temp&#34;* ]]; then
-</span><span class="s">  echo &#34;Deleting temp directory&#34;
-</span><span class="s">  rm -rf ${download_temp_path}
-</span><span class="s">fi
-</span><span class="s">
-</span><span class="s">echo -e &#34;\nDone (type &#39;git-deps-syncer&#39; for help)\n&#34;
-</span><span class="s">
-</span><span class="s">EOF</span>
+<p>Download and install <code>git-deps-syncer</code> executable (copy &amp; paste into a terminal):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">curl -sfLS https://raw.githubusercontent.com/ZachiNachshon/git-deps-syncer/master/install.sh <span class="p">|</span> bash -
+</code></pre></div><p>Available installation flags:
+<div class="table-responsive"><table class="table">
+<thead>
+<tr>
+<th>Flag</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>VERSION</code></td>
+<td>Specify the released version to install</td>
+</tr>
+<tr>
+<td><code>DRY_RUN</code></td>
+<td>Run all commands in dry-run mode without file system changes</td>
+</tr>
+</tbody>
+</table></div>
+</p>
+<p>Example:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">curl -sfLS <span class="se">\
+</span><span class="se"></span>  https://raw.githubusercontent.com/ZachiNachshon/git-deps-syncer/master/install.sh <span class="p">|</span> <span class="se">\
+</span><span class="se"></span>  <span class="nv">DRY_RUN</span><span class="o">=</span>True <span class="se">\
+</span><span class="se"></span>  <span class="nv">VERSION</span><span class="o">=</span>0.6.0 <span class="se">\
+</span><span class="se"></span>  bash -
 </code></pre></div><p>Alternatively, you can download a release directy from GitHub</p>
 <p><a href="https://github.com/ZachiNachshon/git-deps-syncer/releases" class="btn btn-bd-primary" onclick="ga('send', 'event', 'Getting started', 'Download', 'Download Git Deps Syncer');" target="_blank">Download Specific Release</a></p>
 <div class="bd-callout bd-callout-warning">
@@ -406,6 +395,33 @@
 <h2 id="pre-built-release">Pre-Built Release <a class="anchor-link" href="#pre-built-release" aria-label="Link to this section: Pre-Built Release"></a></h2>
 <p>Clone <code>git-deps-syncer</code> repository into a directory of your choice:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">git clone https://github.com/ZachiNachshon/git-deps-syncer.git<span class="p">;</span> <span class="nb">cd</span> git-deps-syncer
+</code></pre></div><h2 id="uninstall">Uninstall <a class="anchor-link" href="#uninstall" aria-label="Link to this section: Uninstall"></a></h2>
+<p>Instruction to uninstall <code>git-deps-syncer</code> based on installation method.</p>
+<p><strong>Homebrew</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">brew remove git-deps-syncer
+</code></pre></div><p><strong>Released Version</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">curl -sfLS https://raw.githubusercontent.com/ZachiNachshon/git-deps-syncer/master/uninstall.sh <span class="p">|</span> bash -
+</code></pre></div><p>Available flags:
+<div class="table-responsive"><table class="table">
+<thead>
+<tr>
+<th>Flag</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DRY_RUN</code></td>
+<td>Run all commands in dry-run mode without file system changes</td>
+</tr>
+</tbody>
+</table></div>
+</p>
+<p>Example:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">curl -sfLS <span class="se">\
+</span><span class="se"></span>  https://raw.githubusercontent.com/ZachiNachshon/git-deps-syncer/master/uninstall.sh <span class="p">|</span> <span class="se">\
+</span><span class="se"></span>  <span class="nv">DRY_RUN</span><span class="o">=</span>True <span class="se">\
+</span><span class="se"></span>  bash -
 </code></pre></div>
       </div>
     </main>
@@ -457,8 +473,8 @@
         <h5>Community</h5>
         <ul class="list-unstyled">
           <li class="mb-2"><a href="https://github.com/ZachiNachshon/git-deps-syncer/issues" target="_blank">Issues</a></li>
+          <li class="mb-2"><a href="https://github.com/sponsors/ZachiNachshon" target="_blank">Sponsorship</a></li>
           
-          <li class="mb-2"><a href="https://www.paypal.com/paypalme/ZachiNachshon" target="_blank">Sponsorship</a></li>
           
         </ul>
       </div>
