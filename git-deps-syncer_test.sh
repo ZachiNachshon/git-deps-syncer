@@ -80,8 +80,8 @@ test_sync_fix_broken_repo_link() {
   local dep_revision_1="1234abcd4321dcba"
 
   # And I run a sync all command
-  export GIT_DEPS_REPO_WORKING_PATH="${working_dir}" && 
-  ./git-deps-syncer.sh sync-all --dry-run -y -v >&"${TEST_log}" ||
+  export GIT_DEPS_REPO_WORKING_PATH="${working_dir}" &&
+    ./git-deps-syncer.sh sync-all --dry-run -y -v >&"${TEST_log}" ||
     echo "Failed to run git-deps-syncer command"
 
   # Then I expect the broken repo link to get symlinked to correct path
@@ -106,8 +106,8 @@ test_sync_all_multiple_repos() {
   local dep_revision_2="1234567890"
 
   # And I run a sync all command
-  export GIT_DEPS_REPO_WORKING_PATH="${working_dir}" && 
-  ./git-deps-syncer.sh sync-all --dry-run -y -v >&"${TEST_log}" ||
+  export GIT_DEPS_REPO_WORKING_PATH="${working_dir}" &&
+    ./git-deps-syncer.sh sync-all --dry-run -y -v >&"${TEST_log}" ||
     echo "Failed to run git-deps-syncer command"
 
   # Then I expect all sync all commands to get executed
@@ -150,14 +150,14 @@ test_sync_all_multiple_dev_repos() {
   local dev_dep_local_path_2="/path/to/dev_dummy_dep_2"
 
   # And I run a sync all DEV deps command
-  export GIT_DEPS_REPO_WORKING_PATH="${working_dir}" && 
-  ./git-deps-syncer.sh sync-all --save-dev --dry-run -y -v >&"${TEST_log}" ||
+  export GIT_DEPS_REPO_WORKING_PATH="${working_dir}" &&
+    ./git-deps-syncer.sh sync-all --save-dev --dry-run -y -v >&"${TEST_log}" ||
     echo "Failed to run git-deps-syncer command"
 
   # Then I expect all sync all DEV devs commands to get executed
   assert_expect_log "$(printf "${SYNCER_CREATE_EXTERNAL_FOLDER_COMMAND}" "${working_dir}")"
   assert_expect_log "$(printf "${SYNCER_LINK_DEV_DEP_COMMAND}" "${dev_dep_local_path_1}" "${dev_dep_name_1}")"
-  
+
   assert_expect_log "$(printf "${SYNCER_CREATE_EXTERNAL_FOLDER_COMMAND}" "${working_dir}")"
   assert_expect_log "$(printf "${SYNCER_LINK_DEV_DEP_COMMAND}" "${dev_dep_local_path_2}" "${dev_dep_name_2}")"
 
@@ -177,8 +177,8 @@ test_sync_a_single_repo() {
   local dep_name_2="dummy_dep_2"
 
   # And I sync a single repo command
-  export GIT_DEPS_REPO_WORKING_PATH="${working_dir}" && 
-  ./git-deps-syncer.sh sync "${dep_name_1}" --dry-run -y -v >&"${TEST_log}" ||
+  export GIT_DEPS_REPO_WORKING_PATH="${working_dir}" &&
+    ./git-deps-syncer.sh sync "${dep_name_1}" --dry-run -y -v >&"${TEST_log}" ||
     echo "Failed to run git-deps-syncer command"
 
   # Then I expect sync single repo commands to get executed
@@ -211,14 +211,14 @@ test_sync_a_single_dev_repo() {
   local dev_dep_name_2="dev_dummy_dep_2"
 
   # And I sync a single dev repo command
-  export GIT_DEPS_REPO_WORKING_PATH="${working_dir}" && 
-  ./git-deps-syncer.sh sync "${dev_dep_name_1}" --save-dev --dry-run -y -v >&"${TEST_log}" ||
+  export GIT_DEPS_REPO_WORKING_PATH="${working_dir}" &&
+    ./git-deps-syncer.sh sync "${dev_dep_name_1}" --save-dev --dry-run -y -v >&"${TEST_log}" ||
     echo "Failed to run git-deps-syncer command"
 
   # Then I expect sync single dev repo commands to get executed
   assert_expect_log "$(printf "${SYNCER_CREATE_EXTERNAL_FOLDER_COMMAND}" "${working_dir}")"
   assert_expect_log "$(printf "${SYNCER_LINK_DEV_DEP_COMMAND}" "${dev_dep_local_path_1}" "${dev_dep_name_1}")"
-  
+
   assert_not_expect_log "$(printf "${dev_dep_name_2}")"
 
   after_test
@@ -230,8 +230,8 @@ test_sync_single_repo_requires_repo_name() {
   local working_dir=$(get_path_for_managed_repo)
 
   # And I sync a single repo command
-  export GIT_DEPS_REPO_WORKING_PATH="${working_dir}" && 
-  ./git-deps-syncer.sh sync --save-dev --dry-run -y -v >&"${TEST_log}"
+  export GIT_DEPS_REPO_WORKING_PATH="${working_dir}" &&
+    ./git-deps-syncer.sh sync --save-dev --dry-run -y -v >&"${TEST_log}"
 
   # Then I expect the command to fail on missing repo name
   assert_expect_log "Missing\/invalid argument value. usage: sync \[dep-name\]"
@@ -254,8 +254,8 @@ test_show_all_declared_repos() {
   local dep_revision_2="1234567890"
 
   # And I print all declared repos
-  export GIT_DEPS_REPO_WORKING_PATH="${working_dir}" && 
-  ./git-deps-syncer.sh show >&"${TEST_log}"
+  export GIT_DEPS_REPO_WORKING_PATH="${working_dir}" &&
+    ./git-deps-syncer.sh show >&"${TEST_log}"
 
   # Then I expect the output to contains all the expected repos
   assert_expect_log_exact_text "$(printf "${GDS_SHOW_REPOS_JSON}" \
@@ -281,7 +281,7 @@ test_clear_all_repos() {
   # Then I expect to unlink all repo dependencies
   assert_expect_log "$(printf "${SYNCER_UNLINK_ABS_DEP_COMMAND}" "${working_dir}" "${dep_name_1}")"
   assert_expect_log "$(printf "${SYNCER_UNLINK_ABS_DEP_COMMAND}" "${working_dir}" "${dep_name_2}")"
-  
+
   after_test
 }
 
@@ -291,8 +291,8 @@ test_clear_single_repo_requires_repo_name() {
   local working_dir=$(get_path_for_managed_repo)
 
   # And I clear a single repo command
-  export GIT_DEPS_REPO_WORKING_PATH="${working_dir}" && 
-  ./git-deps-syncer.sh clear --save-dev --dry-run -y -v >&"${TEST_log}"
+  export GIT_DEPS_REPO_WORKING_PATH="${working_dir}" &&
+    ./git-deps-syncer.sh clear --save-dev --dry-run -y -v >&"${TEST_log}"
 
   # Then I expect the command to fail on missing repo name
   assert_expect_log "Missing\/invalid argument value. usage: clear \[dep-name\]"
@@ -310,16 +310,16 @@ test_clear_a_single_repo() {
   local dep_name_2="dummy_dep_2"
 
   # And I clear a single repo dependency
-  export GIT_DEPS_REPO_WORKING_PATH="${working_dir}" && 
-  ./git-deps-syncer.sh clear "${dep_name_1}" --dry-run -y -v >&"${TEST_log}" ||
+  export GIT_DEPS_REPO_WORKING_PATH="${working_dir}" &&
+    ./git-deps-syncer.sh clear "${dep_name_1}" --dry-run -y -v >&"${TEST_log}" ||
     echo "Failed to run git-deps-syncer command"
 
   # Then I expect a single repo dependency to get removed
   assert_expect_log "$(printf "${SYNCER_UNLINK_ABS_DEP_COMMAND}" "${working_dir}" "${dep_name_1}")"
-  
+
   # And the other repo dependency should stay intanct
   assert_not_expect_log "$(printf "${dep_name_2}")"
-  
+
   after_test
 }
 
@@ -337,13 +337,13 @@ test_init_git_deps_config() {
   local example_dev_dep_path_1="/path/to/local/clone/of/REPOSITORY_NAME"
 
   # When I init a new .git-deps folder and config file
-  export GIT_DEPS_REPO_WORKING_PATH="${working_dir}" && 
-  ./git-deps-syncer.sh init --dry-run -y -v >&"${TEST_log}" ||
+  export GIT_DEPS_REPO_WORKING_PATH="${working_dir}" &&
+    ./git-deps-syncer.sh init --dry-run -y -v >&"${TEST_log}" ||
     echo "Failed to run git-deps-syncer command"
 
-  # Then I expect a .git-deps folder to get created 
+  # Then I expect a .git-deps folder to get created
   assert_expect_log "$(printf "${INIT_CREATE_GIT_DEP_FOLDER_COMMAND}" "${working_dir}")"
-  
+
   # And all template values to exist
   assert_expect_log "${example_dep_name_1}"
   assert_expect_log "${example_dep_url_1}"
@@ -353,7 +353,7 @@ test_init_git_deps_config() {
   assert_expect_log "${example_dev_dep_path_1}"
 
   # TODO: Need to figure out how to verify if a test log output contians a JSON w/out escaping
-  #       characters (similar to 'assert_expect_log_exact_text')  
+  #       characters (similar to 'assert_expect_log_exact_text')
 
   after_test
 }
@@ -364,8 +364,8 @@ test_config_output() {
   local working_dir=$(get_path_for_managed_repo)
 
   # Given I print git-deps-syncer config
-  export GIT_DEPS_REPO_WORKING_PATH="${working_dir}" && 
-  ./git-deps-syncer.sh config >&"${TEST_log}"
+  export GIT_DEPS_REPO_WORKING_PATH="${working_dir}" &&
+    ./git-deps-syncer.sh config >&"${TEST_log}"
 
   # Then I expect the output to contains all the expected location paths
   assert_expect_log_exact_text "$(printf "${GDS_CONFIG_OUTPUT}" "$HOME")"

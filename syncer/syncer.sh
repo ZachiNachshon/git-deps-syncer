@@ -18,7 +18,7 @@ DEV_INDICATOR="[DEV] "
 # Example:
 #   To exclude 'b' from path <repo>/a/b we'll have to add "a/b" to the array.
 #   This script will append the absolute path for <ABS_PATH>/<REPO_ROOT>/a/b
-EXCLUDED_FILE_AND_DIRS_ARRAY=( ".git" ".idea" ".git-deps" "external" ".gitignore" ".DS_Store")
+EXCLUDED_FILE_AND_DIRS_ARRAY=(".git" ".idea" ".git-deps" "external" ".gitignore" ".DS_Store")
 
 print_logo_syncer() {
   if ! is_silent; then
@@ -73,7 +73,7 @@ print_instructions_syncer() {
   ${COLOR_LIGHT_CYAN}How to declare a dependency?${COLOR_NONE}
   To add/remove an external git dependency, update the JSON file ${COLOR_PURPLE}<REPO_ROOT>/${EXTERNAL_REPOS_JSON_PATH}${COLOR_NONE}${pr_creation_alert}
   ================================================================================================
-"""  >&2
+""" >&2
   fi
 }
 
@@ -99,7 +99,7 @@ print_dev_instructions_syncer() {
   To add/remove an external dev dependency, update the JSON file ${COLOR_PURPLE}<REPO_ROOT>/${EXTERNAL_REPOS_JSON_PATH}${COLOR_NONE}
   under path ${COLOR_PURPLE}.devDependencies.repos${COLOR_NONE}
   ================================================================================================
-"""  >&2
+""" >&2
   fi
 }
 
@@ -190,8 +190,8 @@ sync_repository() {
 
   local new_revision=$(cmd_run "git -C \"${clone_path}\" rev-parse \"${dep_branch}\"")
   if [[ "${prev_revision}" != ${new_revision} ]]; then
-#      echo "prev_revision: ${prev_revision}"
-#      echo "new_revision: ${new_revision}"
+    #      echo "prev_revision: ${prev_revision}"
+    #      echo "new_revision: ${new_revision}"
     echo -e "\nCommits:\n"
     cmd_run "git -C \"${clone_path}\" --no-pager log \
 --oneline \
@@ -224,26 +224,26 @@ copy_repo_content_as_external_dependency() {
   # Must use an array for includes when running rsync from a script
   local includes_array=()
   if [[ -n "${includes}" ]]; then
-    includes_array=( "${includes}" )
+    includes_array=("${includes}")
   fi
 
   local exclusion_array=()
   if [[ -n "${excludes}" ]]; then
-    exclusion_array=( "${excludes}")
+    exclusion_array=("${excludes}")
   fi
 
   # Must use an array for exclusions when running rsync from a script
-  for (( i=0; i < ${#EXCLUDED_FILE_AND_DIRS_ARRAY[@]}; i++ )); do
+  for ((i = 0; i < ${#EXCLUDED_FILE_AND_DIRS_ARRAY[@]}; i++)); do
     local item=${EXCLUDED_FILE_AND_DIRS_ARRAY[i]}
-    exclusion_array+=( --exclude="${item}" )
+    exclusion_array+=(--exclude="${item}")
   done
 
   if [[ -n "${includes}" && -n "${excludes}" ]]; then
-    exclusion_array+=( --exclude="*/" )
+    exclusion_array+=(--exclude="*/")
   fi
 
   # TO DEBUS RSYNC COMMAND ADD THE -vvv flag i.e. rsync -a -vvv ...
-   
+
   # Example used from the shell (in-process shouldn't have commas):
   #   rsync -a \
   #     --include='golang*/' \
@@ -257,7 +257,7 @@ copy_repo_content_as_external_dependency() {
   #     --exclude='*/' \
   #     /path/to/source/dir/ \
   #     /path/to/destination/dir/
-  # 
+  #
   # Reason for using an array for both includes and excludes:
   #   https://stackoverflow.com/questions/69297946/rsync-ignores-exclude-options-being-run-in-bash-script
   cmd_run "rsync -a ${includes_array[*]} ${exclusion_array[*]} ${clone_path}/ ${copy_path}/"
@@ -284,14 +284,14 @@ _set_dependency_symlink() {
     if is_symlink_target "${dep_symlink_abs_path}" "${dep_path}"; then
       log_info "Dependency ${dep_type}is not symlinked to expected target, re-linking. name: ${dep_name}, path: ${dep_path}"
       remove_symlink "${dep_symlink_abs_path}"
-      create_symlink "${dep_symlink_relative_path}" "${dep_path}" 
+      create_symlink "${dep_symlink_relative_path}" "${dep_path}"
     else
       log_info "${dep_type}Dependency is symlinked to expected target. name: ${dep_name}, path: ${dep_path}"
     fi
 
   else
     log_info "Creating a symlink to ${dep_type}dependency. name: ${dep_name}, path: ${dep_path}"
-    create_symlink "${dep_symlink_relative_path}" "${dep_path}" 
+    create_symlink "${dep_symlink_relative_path}" "${dep_path}"
   fi
 }
 
@@ -303,7 +303,7 @@ set_external_dev_dependency_symlink() {
 
 set_external_dependency_symlink() {
   local dep_name=$1
-  # Must use relative path to the repo content root for the symlink to 
+  # Must use relative path to the repo content root for the symlink to
   # stay valid on other system such as GitHub
   local dep_relative_path=$(get_git_deps_dep_relative_path "${dep_name}")
   _set_dependency_symlink "${dep_name}" "${dep_relative_path}"
@@ -358,20 +358,19 @@ remove_stale_git_external_deps() {
   # Create a strings array from all external git deps directories names
   for key in $(jq '.dependencies.repos | keys | .[]' "${config_file_path}"); do
     repo=$(jq -r ".dependencies.repos[$key]" "${config_file_path}")
-    name=$(jq -r '.name' <<< "${repo}")
-    declared_deps_paths_array+=( "${external_folder_path}/${name}" )
+    name=$(jq -r '.name' <<<"${repo}")
+    declared_deps_paths_array+=("${external_folder_path}/${name}")
   done
 
   # Remove git repository content
   local existing_deps_array=(${external_folder_path}/*)
-  for (( i=0; i < ${#existing_deps_array[@]}; i++ ))
-  do
+  for ((i = 0; i < ${#existing_deps_array[@]}; i++)); do
     local existing_dep_dir_path=${existing_deps_array[i]}
     # Check if array of external git deps does not contain the dependency
     if [[ "${declared_deps_paths_array[*]}" != "${existing_dep_dir_path}" ]]; then
       local existing_dep_name=$(basename "${existing_dep_dir_path}")
-      if [[ -n "${existing_dep_name}" && -d "${existing_dep_dir_path}" && 
-            "${existing_dep_dir_path}" == */external/* ]]; then
+      if [[ -n "${existing_dep_name}" && -d "${existing_dep_dir_path}" &&
+        "${existing_dep_dir_path}" == */external/* ]]; then
         log_info "Removing git dependency. name: ${existing_dep_name}"
         cmd_run "rm -rf ${existing_dep_dir_path}"
         removed_at_least_one="true"
@@ -379,7 +378,7 @@ remove_stale_git_external_deps() {
     fi
   done
 
-  if [[ -z "${removed_at_least_one}" ]];  then
+  if [[ -z "${removed_at_least_one}" ]]; then
     log_info "No stale git dependencies were found for removal"
   fi
 }
@@ -395,22 +394,21 @@ remove_stale_git_external_symlinks() {
   # Create a strings array from all symlinks from the external folder directories names
   for key in $(jq '.dependencies.repos | keys | .[]' "${config_file_path}"); do
     repo=$(jq -r ".dependencies.repos[$key]" "${config_file_path}")
-    name=$(jq -r '.name' <<< "${repo}")
-    declared_deps_symlink_paths_array+=( "${external_folder_symlink_path}/${name}" )
+    name=$(jq -r '.name' <<<"${repo}")
+    declared_deps_symlink_paths_array+=("${external_folder_symlink_path}/${name}")
   done
 
   # Remove stale/broken symlinks
   local existing_deps_symlinks_array=(${external_folder_symlink_path}/*)
-  for (( i=0; i < ${#existing_deps_symlinks_array[@]}; i++ ))
-  do
+  for ((i = 0; i < ${#existing_deps_symlinks_array[@]}; i++)); do
     local existing_dep_symlink_path=${existing_deps_symlinks_array[i]}
     if ! is_symlink "${existing_dep_symlink_path}"; then
       continue
     fi
 
     # Check if array of external git symlinks does not contain the dependency
-    if [[ "${declared_deps_symlink_paths_array[*]}" != "${existing_dep_symlink_path}" && 
-          "${existing_dep_symlink_path}" == */external/* ]]; then
+    if [[ "${declared_deps_symlink_paths_array[*]}" != "${existing_dep_symlink_path}" &&
+      "${existing_dep_symlink_path}" == */external/* ]]; then
       local existing_dep_symlink_name=$(basename "${existing_dep_symlink_path}")
       if [[ -n "${existing_dep_symlink_name}" ]]; then
         remove_symlink "${existing_dep_symlink_path}"
@@ -419,7 +417,7 @@ remove_stale_git_external_symlinks() {
     fi
   done
 
-  if [[ -z "${removed_at_least_one}" ]];  then
+  if [[ -z "${removed_at_least_one}" ]]; then
     log_info "No stale git symlinks were found for removal"
   fi
 }
@@ -443,10 +441,10 @@ sync_external_dep() {
   if is_dev_dependencies; then
     for key in $(jq '.devDependencies.repos | keys | .[]' "${config_file_path}"); do
       repo=$(jq -r ".devDependencies.repos[$key]" "${config_file_path}")
-      name=$(jq -r '.name' <<< "${repo}")
+      name=$(jq -r '.name' <<<"${repo}")
 
       if [[ "${dep_name}" == "all" || "${dep_name}" == "${name}" ]]; then
-        local_path=$(jq -r '.localPath' <<< "${repo}")
+        local_path=$(jq -r '.localPath' <<<"${repo}")
 
         if [[ -n "${name}" ]]; then
           print_dependency_sync_title "${name}"
@@ -460,16 +458,16 @@ sync_external_dep() {
   else
     for key in $(jq '.dependencies.repos | keys | .[]' "${config_file_path}"); do
       repo=$(jq -r ".dependencies.repos[$key]" "${config_file_path}")
-      name=$(jq -r '.name' <<< "${repo}")
+      name=$(jq -r '.name' <<<"${repo}")
 
       if [[ "${dep_name}" == "all" || "${dep_name}" == "${name}" ]]; then
-        url=$(jq -r '.url' <<< "${repo}")
-        branch=$(jq -r '.branch' <<< "${repo}")
-        revision=$(jq -r '.revision' <<< "${repo}")
+        url=$(jq -r '.url' <<<"${repo}")
+        branch=$(jq -r '.branch' <<<"${repo}")
+        revision=$(jq -r '.revision' <<<"${repo}")
 
         if [[ -n "${name}" ]]; then
           includes=$(extract_includes "${config_file_path}" "${key}")
-          excludes=$(extract_excludes "${config_file_path}" "${key}")        
+          excludes=$(extract_excludes "${config_file_path}" "${key}")
 
           print_dependency_sync_title "${name}"
           add_or_sync_dependency "${name}" "${url}" "${branch}" "${revision}" "${includes}" "${excludes}"
@@ -482,7 +480,7 @@ sync_external_dep() {
     done
   fi
 
-  if [[ -z "${sync_at_least_one}" ]];  then
+  if [[ -z "${sync_at_least_one}" ]]; then
     log_warning "Nothing was synced, no sync target(s) could be found."
   fi
 }
