@@ -55,11 +55,11 @@ aliases:
     </a>
 </div>
 
-<br>
-
-<ul class="list-unstyled small text-muted">
-    <li class="mb-2">PayPal logo by <a href="https://github.com/andreostrovsky/donate-with-paypal" target="_blank">donate-with-paypal</a></li>
-</ul>
+<div class="sponsor_buttons">
+    <ul class="list-unstyled small text-muted">
+        <li class="mb-2">PayPal logo by <a href="https://github.com/andreostrovsky/donate-with-paypal" target="_blank">donate-with-paypal</a></li>
+    </ul>
+</div>
 
 ## Get Involved
 
