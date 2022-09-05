@@ -38,10 +38,16 @@ The `makefile` within this repository contains numerous tasks used for project d
 {{< bs-table >}}
 | Task | Description |
 | --- | --- |
-| `release` | Create release tag in GitHub with version from resources/version.txt |
-| `delete-release` | Enter a tag to delete its attached release tag from GitHub |
-| `commit-to-sha-hash` | Enter a commit to get its SHA hash |
-| `tag-to-sha-hash` | Enter a tag to get its SHA hash |
+| `install_from_respository` | Install a local git-deps-syncer from this repository |
+| `uninstall` | Uninstall a local git-deps-syncer |
+| `release_version_create` | Create release tag in GitHub with version from resources/version.txt |
+| `release_version_delete` | Enter a tag to delete its attached release tag from GitHub |
+| `calculate_sha_by_commit_hash` | Enter a commit to get its SHA hash |
+| `calculate_sha_by_tag` | Enter a tag to get its SHA hash |
+| `serve_docs_site` | Run a local docs site |
+| `serve_docs_site_lan` | Run a local docs site (open for LAN) |
+| `test` | Run tests suite |
+| `fmt` | Format shell scripts using shfmt bash style (https://github.com/mvdan/sh) |
 {{< /bs-table >}}
 
 {{< callout warning >}}
@@ -69,6 +75,10 @@ The `/docs-site/package.json` includes numerous tasks for developing the documen
 | `npm run docs-serve-lan` | Builds and runs the documentation locally, make it available on home network<br> (for testing views on mobile phones) |
 {{< /bs-table >}}
 
+{{< callout warning >}}
+When running the docs site with LAN access, make sure to update the IP address of the `docs-serve-lan` script on the `pacakge.json` file.
+{{< /callout >}}
+
 ## Local documentation 
 
 Running our documentation locally requires the use of Hugo, which gets installed via the `hugo-bin` npm package. Hugo is a blazingly fast and quite extensible static site generator. Here’s how to get it started:
@@ -76,10 +86,6 @@ Running our documentation locally requires the use of Hugo, which gets installed
 - Run through the [tooling setup](#tooling-setup) above to install all dependencies
 - Navigate to `/docs-site` directory and run `npm install` to install local dependencies listed in `package.json`
 - From `/docs-site` directory, run `npm run docs-serve` in the command line
-- Open [http://localhost:9001/](http://localhost:9001/) in your browser
+- Open [http://localhost:9001/git-deps-syncer](http://localhost:9001/git-deps-syncer) in your browser
 
 Learn more about using Hugo by reading its [documentation](https://gohugo.io/documentation/).
-
-## Troubleshooting
-
-In case you encounter problems with missing dependencies, run `make align-deps`.

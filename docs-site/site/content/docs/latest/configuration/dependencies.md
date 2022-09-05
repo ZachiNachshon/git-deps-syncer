@@ -46,8 +46,8 @@ This file contains the synced git dependencies information such as url / branch 
 {{< /bs-table >}}
 
 {{< callout info >}}
-By default the following files/folders are being excluded from the sync action of all git repositories:<br>
-`.git` `.idea` `.git-deps` `external` `.gitignore` `.DS_Store`
+By default the following files / folders are being excluded from the sync action of all git repositories:<br>
+`.git`, `.idea`, `.git-deps`, `external`, `.gitignore`, `.DS_Store`
 {{< /callout >}}
 
 ### Dev dependencies
