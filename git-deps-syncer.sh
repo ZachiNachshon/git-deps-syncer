@@ -143,15 +143,15 @@ get_config_path_from_content_root() {
 }
 
 open_github_pr() {
-#  local short_revision=$(echo ${revision} | cut -c 1-7)
+  #  local short_revision=$(echo ${revision} | cut -c 1-7)
 
   if should_open_github_pr && ! is_dev_dependencies; then
-#    local external_folder_path=$(get_external_folder_symlink_abs_path)
-#    log_info "Creating a PR from dependency vector update. name: ${dep_name}_${short_revision}"
-#    git add "${external_folder_path}" --all
+    #    local external_folder_path=$(get_external_folder_symlink_abs_path)
+    #    log_info "Creating a PR from dependency vector update. name: ${dep_name}_${short_revision}"
+    #    git add "${external_folder_path}" --all
 
-#    local external_folder_symlink_path=$(get_external_folder_symlink_abs_path)
-#    git add "${external_folder_symlink_path}" --all
+    #    local external_folder_symlink_path=$(get_external_folder_symlink_abs_path)
+    #    git add "${external_folder_symlink_path}" --all
 
     # Create branch
     # Open PR using GH cli
@@ -260,78 +260,78 @@ parse_program_arguments() {
 
   while test $# -gt 0; do
     case "$1" in
-    -h | --help)
-      print_help_menu_and_exit "$0"
-      shift
-      ;;
-    sync-all)
-      CLI_ARGUMENT_SYNC_ALL_DEPS="sync-all"
-      shift
-      ;;
-    sync)
-      CLI_ARGUMENT_SYNC_DEP="sync"
-      shift
-      CLI_VALUE_SYNC_DEP_NAME=$1
-      shift
-      ;;
-    show)      
-      CLI_ARGUMENT_SHOW_DEPS="show"
-      shift
-      ;;
-    clear-all)
-      CLI_ARGUMENT_CLEAR_ALL_DEPS="clear-all"
-      shift
-      ;;
-    clear)
-      CLI_ARGUMENT_CLEAR_DEP="clear"
-      shift
-      CLI_VALUE_CLEAR_DEP_NAME=$1
-      shift
-      ;;
-    version)
-      CLI_ARGUMENT_VERSION="version"
-      shift
-      ;;
-    config)
-      CLI_ARGUMENT_CONFIG="config"
-      shift
-      ;;
-    init)
-      CLI_ARGUMENT_INIT="init"
-      shift
-      ;;
-    --save-dev)
-      CLI_OPTION_DEPS_TYPE="save-dev"
-      shift
-      ;;
-    --open-github-pr)
-      CLI_OPTION_OPEN_GITHUB_PR="open-github-pr"
-      shift
-      ;;
-    --dry-run)
-      # Used by logger.sh
-      export LOGGER_DRY_RUN="true"
-      shift
-      ;;
-    -y)
-      # Used by prompter.sh
-      export PROMPTER_SKIP_PROMPT="y"
-      shift
-      ;;
-    -v | --verbose)
-      # Used by logger.sh
-      export LOGGER_DEBUG="true"
-      shift
-      ;;
-    -s | --silent)
-      # Used by logger.sh
-      export LOGGER_SILENT="true"
-      shift
-      ;;
-    *)
-      print_help_menu_and_exit "$0"
-      shift
-      ;;
+      -h | --help)
+        print_help_menu_and_exit "$0"
+        shift
+        ;;
+      sync-all)
+        CLI_ARGUMENT_SYNC_ALL_DEPS="sync-all"
+        shift
+        ;;
+      sync)
+        CLI_ARGUMENT_SYNC_DEP="sync"
+        shift
+        CLI_VALUE_SYNC_DEP_NAME=$1
+        shift
+        ;;
+      show)
+        CLI_ARGUMENT_SHOW_DEPS="show"
+        shift
+        ;;
+      clear-all)
+        CLI_ARGUMENT_CLEAR_ALL_DEPS="clear-all"
+        shift
+        ;;
+      clear)
+        CLI_ARGUMENT_CLEAR_DEP="clear"
+        shift
+        CLI_VALUE_CLEAR_DEP_NAME=$1
+        shift
+        ;;
+      version)
+        CLI_ARGUMENT_VERSION="version"
+        shift
+        ;;
+      config)
+        CLI_ARGUMENT_CONFIG="config"
+        shift
+        ;;
+      init)
+        CLI_ARGUMENT_INIT="init"
+        shift
+        ;;
+      --save-dev)
+        CLI_OPTION_DEPS_TYPE="save-dev"
+        shift
+        ;;
+      --open-github-pr)
+        CLI_OPTION_OPEN_GITHUB_PR="open-github-pr"
+        shift
+        ;;
+      --dry-run)
+        # Used by logger.sh
+        export LOGGER_DRY_RUN="true"
+        shift
+        ;;
+      -y)
+        # Used by prompter.sh
+        export PROMPTER_SKIP_PROMPT="y"
+        shift
+        ;;
+      -v | --verbose)
+        # Used by logger.sh
+        export LOGGER_DEBUG="true"
+        shift
+        ;;
+      -s | --silent)
+        # Used by logger.sh
+        export LOGGER_SILENT="true"
+        shift
+        ;;
+      *)
+        print_help_menu_and_exit "$0"
+        shift
+        ;;
     esac
   done
 }
@@ -355,7 +355,7 @@ check_invalid_clear_dep_value() {
   [[ -n "${CLI_ARGUMENT_CLEAR_DEP}" && (-z "${CLI_VALUE_CLEAR_DEP_NAME}" || "${CLI_VALUE_CLEAR_DEP_NAME}" == -*) ]]
 }
 
-main() {  
+main() {
   parse_program_arguments "$@"
   verify_program_arguments
 

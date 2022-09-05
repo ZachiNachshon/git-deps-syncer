@@ -18,7 +18,7 @@ clear_external_dependency_symlink() {
 
 clear_external_folder_symlinks() {
   local external_symlinks_folder_path=$1
-  for dep_abs_path in "${external_symlinks_folder_path}"/* ; do
+  for dep_abs_path in "${external_symlinks_folder_path}"/*; do
     # If directory is empty there is an empty iteration on a stale path, skip that
     if [[ "${dep_abs_path}" != "${external_symlinks_folder_path}/*" ]]; then
       remove_repository_symlink "${dep_abs_path}"
@@ -55,7 +55,7 @@ remove_repository_symlink() {
     is_removal_success="true"
   fi
 
-  if [[ -z "${is_removal_success}" ]];  then
+  if [[ -z "${is_removal_success}" ]]; then
     log_warning "Invalid symlink path, cannot clear. path: ${dep_abs_path}"
   fi
 }

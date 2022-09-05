@@ -55,7 +55,7 @@ is_text_equal() {
 
   check_tool diff
 
-  # Note: Those diff options won't apply on lines that start with a whitespace char 
+  # Note: Those diff options won't apply on lines that start with a whitespace char
 
   #  -E, --ignore-tab-expansion
   #         ignore changes due to tab expansion
@@ -71,8 +71,8 @@ is_text_equal() {
 
   # Using sed to remove any color codes from text (example: \033[0;36m)
   diff -wEbB -y --suppress-common-lines \
-  <(echo -e "${str_a}" | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g") \
-  <(echo -e "${str_b}" | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g")
+    <(echo -e "${str_a}" | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g") \
+    <(echo -e "${str_b}" | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g")
 }
 
 # is_text_equal() {
