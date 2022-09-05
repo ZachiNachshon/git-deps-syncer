@@ -15,21 +15,22 @@ create_tarball: ## Create a tarball from local repository
 	.
 
 .PHONY: install_from_respository
-install_from_respository: create_tarball ## Install a local dotfiles CLI from this repository
+install_from_respository: create_tarball ## Install a local git-deps-syncer from this repository
 	@LOCAL_ARCHIVE_FILEPATH=$(CURDIR)/git-deps-syncer.tar.gz ./install.sh
 	@rm -rf $(CURDIR)/git-deps-syncer.tar.gz
 
 .PHONY: uninstall
-uninstall: ## Uninstall a local dotfiles CLI
+uninstall: ## Uninstall a local git-deps-syncer
 	@./uninstall.sh
 
 .PHONY: release_version_create
-release_version_create: ## Create release tag in GitHub with version from resources/version.txt
+release_version_create: create_tarball ## Create release tag in GitHub with version from resources/version.txt
 	@sh -c "'$(CURDIR)/external/shell_scripts_lib/github/release.sh' \
 	'action: create' \
 	'version_file_path: ./resources/version.txt' \
-	'artifact_file_path: git-deps-syncer.sh' \
+	'artifact_file_path: git-deps-syncer.tar.gz' \
 	'debug'"
+	@rm -rf $(CURDIR)/git-deps-syncer.tar.gz
 
 .PHONY: release_version_delete
 release_version_delete: ## Enter a tag to delete its attached release tag from GitHub
@@ -48,16 +49,16 @@ calculate_sha_by_tag: ## Enter a tag to get its SHA hash
 	@sh -c "'$(CURDIR)/external/shell_scripts_lib/github/sha_calculator.sh' \
 	'sha_source: tag' \
 	'repository_url: https://github.com/ZachiNachshon/git-deps-syncer' \
-	'asset_name: git-deps-syncer.sh'"
+	'asset_name: git-deps-syncer.tar.gz'"
 
 # http://localhost:9001/git-deps-syncer/
 .PHONY: serve_docs_site
-serve_docs_site: ## Run a local site
+serve_docs_site: ## Run a local docs site
 	@cd docs-site && npm run docs-serve
 
 # http://192.168.x.xx:9001/
 .PHONY: serve_docs_site_lan
-serve_docs_site_lan: ## Run a local site (open for LAN)
+serve_docs_site_lan: ## Run a local docs site (open for LAN)
 	@cd docs-site && npm run docs-serve-lan
 
 .PHONY: test

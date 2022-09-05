@@ -34,46 +34,28 @@ Alternatively, tap into the formula to have brew search capabilities on that tap
 
 ## Released Version
 
-1. Download and install `git-deps-syncer` executable (copy & paste into a terminal):
+Download and install `git-deps-syncer` executable (copy & paste into a terminal):
 
 ```bash
-bash <<'EOF'
+curl -sfLS https://raw.githubusercontent.com/ZachiNachshon/git-deps-syncer/master/install.sh | bash -
+```
 
-# Change Version accordingly
-VERSION=0.1.0
+Available installation flags:
+{{< bs-table >}}
+| Flag | Description |
+| --- | --- |
+| `VERSION` | Specify the released version to install |
+| `DRY_RUN` | Run all commands in dry-run mode without file system changes |
+{{< /bs-table >}}
 
-# Create a temporary folder
-download_temp_path=$(mktemp -d ${TMPDIR:-/tmp}/git-deps-syncer-temp.XXXXXX)
-cwd=$(pwd)
-cd ${download_temp_path}
+Example:
 
-# Download & extract
-echo -e "\nDownloading git-deps-syncer to temp directory...\n"
-curl -SL "https://github.com/ZachiNachshon/git-deps-syncer/releases/download/v${VERSION}/git-deps-syncer.sh"
-
-# Create a dest directory and move the binary
-echo -e "\nMoving executable to ~/.local/bin"
-mkdir -p ${HOME}/.local/bin; mv git-deps-syncer.sh ${HOME}/.local/bin
-
-# Create a dest directory and move the binary
-echo "Elevating exec permissions (might prompt for password)"
-chmod +x ${HOME}/.local/bin/git-deps-syncer.sh
-
-# Add this line to your *rc file (zshrc, bashrc etc..) to make git-deps-syncer available on new sessions
-echo "Exporting ~/.local/bin (make sure to have it available on PATH)"
-export PATH="${PATH}:${HOME}/.local/bin"
-
-cd ${cwd}
-
-# Cleanup
-if [[ ! -z ${download_temp_path} && -d ${download_temp_path} && ${download_temp_path} == *"git-deps-syncer-temp"* ]]; then
-  echo "Deleting temp directory"
-  rm -rf ${download_temp_path}
-fi
-
-echo -e "\nDone (type 'git-deps-syncer' for help)\n"
-
-EOF
+```bash
+curl -sfLS \
+  https://raw.githubusercontent.com/ZachiNachshon/git-deps-syncer/master/install.sh | \
+  DRY_RUN=True \
+  VERSION=0.6.0 \
+  bash -
 ```
 
 Alternatively, you can download a release directy from GitHub
@@ -92,4 +74,36 @@ Clone `git-deps-syncer` repository into a directory of your choice:
 
 ```bash
 git clone https://github.com/ZachiNachshon/git-deps-syncer.git; cd git-deps-syncer
+```
+
+## Uninstall
+
+Instruction to uninstall `git-deps-syncer` based on installation method.
+
+**Homebrew**
+
+```bash
+brew remove git-deps-syncer
+```
+
+**Released Version**
+
+```bash
+curl -sfLS https://raw.githubusercontent.com/ZachiNachshon/git-deps-syncer/master/uninstall.sh | bash -
+```
+
+Available flags:
+{{< bs-table >}}
+| Flag | Description |
+| --- | --- |
+| `DRY_RUN` | Run all commands in dry-run mode without file system changes |
+{{< /bs-table >}}
+
+Example:
+
+```bash
+curl -sfLS \
+  https://raw.githubusercontent.com/ZachiNachshon/git-deps-syncer/master/uninstall.sh | \
+  DRY_RUN=True \
+  bash -
 ```

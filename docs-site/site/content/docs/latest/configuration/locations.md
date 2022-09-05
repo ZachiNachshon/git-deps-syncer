@@ -21,9 +21,5 @@ aliases: "/docs/latest/configuration/"
 {{< /bs-table >}}
 
 {{< callout info >}}
-Type `git-deps-syncer locations` to get a list of commonly used paths.
+Type `git-deps-syncer config` to get a list of commonly used paths.
 {{< /callout >}}
-
-<div class="col-lg-6">
-   <img style="vertical-align: top;" src="/docs/latest/assets/img/config-locations.svg" width="800">
-</div>

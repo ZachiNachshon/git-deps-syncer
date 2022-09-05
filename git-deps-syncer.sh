@@ -181,7 +181,7 @@ print_help_menu_and_exit() {
   echo -e "${COLOR_WHITE}FLAGS${COLOR_NONE}"
   echo -e "  ${COLOR_LIGHT_CYAN}--save-dev${COLOR_NONE}                Sync ${COLOR_GREEN}devDependencies${COLOR_NONE} local symlinks as declared on ${COLOR_GREEN}${GIT_DEPS_CONFIG_FILENAME}${COLOR_NONE}"
   echo -e "  ${COLOR_LIGHT_CYAN}--open-github-pr${COLOR_NONE}          Open a GitHub PR for git changes after running ${COLOR_GREEN}sync-all${COLOR_NONE}"
-  echo -e "  ${COLOR_LIGHT_CYAN}--dry-run${COLOR_NONE}                 Run all commands in dry-run mode without file system changes"
+  echo -e "  ${COLOR_LIGHT_CYAN}--dry-run${COLOR_NONE}                 Run all commands in dry-run mode ${COLOR_GREEN}without file system changes${COLOR_NONE}"
   echo -e "  ${COLOR_LIGHT_CYAN}-y${COLOR_NONE}                        Do not prompt for approval and accept everything"
   echo -e "  ${COLOR_LIGHT_CYAN}-h${COLOR_NONE} (--help)               Show available actions and their description"
   echo -e "  ${COLOR_LIGHT_CYAN}-v${COLOR_NONE} (--verbose)            Output debug logs for deps-syncer client commands executions"
@@ -338,10 +338,10 @@ parse_program_arguments() {
 
 verify_program_arguments() {
   if check_invalid_sync_dep_value; then
-    # Verify proper command args ordering: dotfiles sync <name> --dry-run -v
+    # Verify proper command args ordering: git-deps-syncer sync <name> --dry-run -v
     log_fatal "Missing/invalid argument value. usage: sync [dep-name]"
   elif check_invalid_clear_dep_value; then
-    # Verify proper command args ordering: dotfiles clear <name> --dry-run -v
+    # Verify proper command args ordering: git-deps-syncer clear <name> --dry-run -v
     log_fatal "Missing/invalid argument value. usage: clear [dep-name]"
   fi
 }
