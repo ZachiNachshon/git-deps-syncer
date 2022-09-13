@@ -164,6 +164,25 @@ test_sync_all_multiple_dev_repos() {
   after_test
 }
 
+test_sync_all_removes_stale_deps() {
+  before_test "test_sync_all_removes_stale_deps"
+
+  local working_dir=$(get_path_for_managed_repo)
+
+  # Given I arrange test data
+  local stale_dep_name="stale_dep"
+
+  # And I run a sync all deps command
+  export GIT_DEPS_REPO_WORKING_PATH="${working_dir}" &&
+    ./git-deps-syncer.sh sync-all --dry-run -y -v >&"${TEST_log}" ||
+    echo "Failed to run git-deps-syncer command"
+
+  # Then I expect the stale dependency to get removed
+  assert_expect_log "$(printf "${SYNCER_UNLINK_ABS_DEP_COMMAND}" "${working_dir}" "${stale_dep_name}")"
+
+  after_test
+}
+
 test_sync_a_single_repo() {
   before_test "test_sync_a_single_repo"
 
@@ -380,6 +399,7 @@ main() {
   test_sync_fix_broken_repo_link
   test_sync_all_multiple_repos
   test_sync_all_multiple_dev_repos
+  test_sync_all_removes_stale_deps
   test_sync_a_single_repo
   test_sync_a_single_dev_repo
   test_sync_single_repo_requires_repo_name
