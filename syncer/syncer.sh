@@ -109,6 +109,7 @@ print_dependency_sync_title() {
   if is_dev_dependencies; then
     prefix="${DEV_INDICATOR}"
   fi
+  new_line
   log_info "${COLOR_GREEN}Syncing ${prefix}dependency - ${name}...${COLOR_NONE}"
 }
 
@@ -324,7 +325,7 @@ extract_includes() {
   local repo_key=$2
   local includes=""
 
-  for inc_key in $(jq ".dependencies.repos[${repo_key}].includes | keys | .[]" "${config_file_path}"); do
+  for inc_key in $(jq "try .dependencies.repos[${repo_key}].includes | keys | .[]" "${config_file_path}"); do
     include=$(jq -r ".dependencies.repos[${repo_key}].includes[$inc_key]" "${config_file_path}")
     includes+=" --include='${include}' "
   done
@@ -339,7 +340,7 @@ extract_excludes() {
   local repo_key=$2
   local excludes=""
 
-  for excl_key in $(jq ".dependencies.repos[${repo_key}].excludes | keys | .[]" "${config_file_path}"); do
+  for excl_key in $(jq "try .dependencies.repos[${repo_key}].excludes | keys | .[]" "${config_file_path}"); do
     exclude=$(jq -r ".dependencies.repos[${repo_key}].excludes[$excl_key]" "${config_file_path}")
     excludes+=" --exclude='${exclude}' "
   done
@@ -366,11 +367,13 @@ remove_stale_git_external_deps() {
   local existing_deps_array=(${external_folder_path}/*)
   for ((i = 0; i < ${#existing_deps_array[@]}; i++)); do
     local existing_dep_dir_path=${existing_deps_array[i]}
+
     # Check if array of external git deps does not contain the dependency
-    if [[ "${declared_deps_paths_array[*]}" != "${existing_dep_dir_path}" ]]; then
+    if [[ ! "${declared_deps_paths_array[*]}" =~ ${existing_dep_dir_path} ]]; then
       local existing_dep_name=$(basename "${existing_dep_dir_path}")
       if [[ -n "${existing_dep_name}" && -d "${existing_dep_dir_path}" &&
         "${existing_dep_dir_path}" == */external/* ]]; then
+
         log_info "Removing git dependency. name: ${existing_dep_name}"
         cmd_run "rm -rf ${existing_dep_dir_path}"
         removed_at_least_one="true"
@@ -407,8 +410,9 @@ remove_stale_git_external_symlinks() {
     fi
 
     # Check if array of external git symlinks does not contain the dependency
-    if [[ "${declared_deps_symlink_paths_array[*]}" != "${existing_dep_symlink_path}" &&
+    if [[ ! "${declared_deps_symlink_paths_array[*]}" =~ ${existing_dep_symlink_path} &&
       "${existing_dep_symlink_path}" == */external/* ]]; then
+
       local existing_dep_symlink_name=$(basename "${existing_dep_symlink_path}")
       if [[ -n "${existing_dep_symlink_name}" ]]; then
         remove_symlink "${existing_dep_symlink_path}"
@@ -436,7 +440,6 @@ sync_external_dep() {
   local dep_name=$1
   local sync_at_least_one=""
 
-  new_line
   local config_file_path=$(get_config_path_from_content_root)
   if is_dev_dependencies; then
     for key in $(jq '.devDependencies.repos | keys | .[]' "${config_file_path}"); do
