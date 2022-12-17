@@ -31,6 +31,7 @@ Available flags to control commands execution.
 | Task | Description |
 | --- | --- |
 | `--save-dev` | Sync **devDependencies** local symlinks as declared on **config.json** |
+| `--skip-symlinks` | Skip symlinks and sync sources directly to the external folder |
 | `--open-github-pr` | Open a GitHub PR for git changes after running **sync-all** |
 | `--dry-run` | Run all commands in dry-run mode **without file system changes** 
 | `-y` | Do not prompt for approval and accept everything |

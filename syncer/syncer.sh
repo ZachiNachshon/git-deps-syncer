@@ -474,7 +474,9 @@ sync_external_dep() {
 
           print_dependency_sync_title "${name}"
           add_or_sync_dependency "${name}" "${url}" "${branch}" "${revision}" "${includes}" "${excludes}"
-          set_external_dependency_symlink "${name}"
+          if ! is_skip_symlinks; then
+            set_external_dependency_symlink "${name}"
+          fi
           sync_at_least_one="true"
         else
           log_warning "Failed to identify and sync repository. name: ${name}"

@@ -7,7 +7,9 @@ SYNCER_GIT_FETCH_COMMAND="git -C \"${HOME}/.git-deps-syncer-cache/%s\" fetch --d
 SYNCER_GIT_RESET_COMMAND="git -C \"${HOME}/.git-deps-syncer-cache/%s\" reset --hard \"%s\" --quiet"
 SYNCER_GIT_CLEAN_COMMAND="git -C \"${HOME}/.git-deps-syncer-cache/%s\" clean -xdf"
 SYNCER_REMOVE_EXTERNAL_DEP_COMMAND="rm -rf %s/.git-deps/external/%s"
+SYNCER_REMOVE_EXTERNAL_DEP_SKIP_SYMLINKS_COMMAND="rm -rf %s/external/%s"
 SYNCER_CREATE_EXTERNAL_DEP_FOLDER_COMMAND="mkdir -p %s/.git-deps/external/%s"
+SYNCER_CREATE_EXTERNAL_DEP_SKIP_SYMLINKS_FOLDER_COMMAND="mkdir -p %s/external/%s"
 SYNCER_RSYNC_COMMAND="rsync -a --include=parent_folder\*/ \
 --include=parent_folder/child_folder\* \
 --exclude=\*_tests\* \
@@ -20,7 +22,20 @@ SYNCER_RSYNC_COMMAND="rsync -a --include=parent_folder\*/ \
 --exclude=\*/ \
 ${HOME}/.git-deps-syncer-cache/%s/ \
 %s/.git-deps/external/%s/"
+SYNCER_RSYNC_SKIP_SYMLINKS_COMMAND="rsync -a --include=parent_folder\*/ \
+--include=parent_folder/child_folder\* \
+--exclude=\*_tests\* \
+--exclude=.git \
+--exclude=.idea \
+--exclude=.git-deps \
+--exclude=external \
+--exclude=.gitignore \
+--exclude=.DS_Store \
+--exclude=\*/ \
+${HOME}/.git-deps-syncer-cache/%s/ \
+%s/external/%s/"
 SYNCER_GRANT_OWNERSHIP_COMMAND="chmod -R +x %s/.git-deps/external/%s"
+SYNCER_GRANT_OWNERSHIP_SKIP_SYMLINKS_COMMAND="chmod -R +x %s/external/%s"
 SYNCER_UNLINK_DEP_COMMAND="unlink external/%s 2>/dev/null"
 SYNCER_UNLINK_ABS_DEP_COMMAND="unlink %s/external/%s 2>/dev/null"
 SYNCER_LINK_DEP_COMMAND="ln -sfn ../.git-deps/external/%s external/%s"
