@@ -60,6 +60,7 @@ CLI_ARGUMENT_INIT=""
 CLI_ARGUMENT_VERSION=""
 
 CLI_OPTION_DEPS_TYPE="" # default is --save-prod
+CLI_OPTION_SKIP_SYMLINKS=""
 CLI_OPTION_OPEN_GITHUB_PR=""
 
 CLI_VALUE_SYNC_DEP_NAME=""
@@ -101,6 +102,10 @@ should_open_github_pr() {
   [[ -n ${CLI_OPTION_OPEN_GITHUB_PR} ]]
 }
 
+is_skip_symlinks() {
+  [[ -n ${CLI_OPTION_SKIP_SYMLINKS} ]]
+}
+
 is_dev_dependencies() {
   [[ "${CLI_OPTION_DEPS_TYPE}" == "save-dev" ]]
 }
@@ -121,7 +126,11 @@ get_git_deps_dep_relative_path() {
 
 get_git_deps_dep_abs_path() {
   local dep_name=$1
-  echo "${GIT_DEPS_REPO_WORKING_PATH}/${EXTERNAL_FOLDER_FROM_GIT_DEPS}/${dep_name}"
+  if is_skip_symlinks; then
+    echo "${GIT_DEPS_REPO_WORKING_PATH}/${EXTERNAL_FOLDER_FROM_CONTENT_ROOT}/${dep_name}"
+  else
+    echo "${GIT_DEPS_REPO_WORKING_PATH}/${EXTERNAL_FOLDER_FROM_GIT_DEPS}/${dep_name}"
+  fi
 }
 
 get_external_folder_symlink_abs_path() {
@@ -180,6 +189,7 @@ print_help_menu_and_exit() {
   echo -e ""
   echo -e "${COLOR_WHITE}FLAGS${COLOR_NONE}"
   echo -e "  ${COLOR_LIGHT_CYAN}--save-dev${COLOR_NONE}                Sync ${COLOR_GREEN}devDependencies${COLOR_NONE} local symlinks as declared on ${COLOR_GREEN}${GIT_DEPS_CONFIG_FILENAME}${COLOR_NONE}"
+  echo -e "  ${COLOR_LIGHT_CYAN}--skip-symlinks${COLOR_NONE}           Skip symlinks and sync sources directly to the external folder"
   echo -e "  ${COLOR_LIGHT_CYAN}--open-github-pr${COLOR_NONE}          Open a GitHub PR for git changes after running ${COLOR_GREEN}sync-all${COLOR_NONE}"
   echo -e "  ${COLOR_LIGHT_CYAN}--dry-run${COLOR_NONE}                 Run all commands in dry-run mode ${COLOR_GREEN}without file system changes${COLOR_NONE}"
   echo -e "  ${COLOR_LIGHT_CYAN}-y${COLOR_NONE}                        Do not prompt for approval and accept everything"
@@ -304,6 +314,10 @@ parse_program_arguments() {
         CLI_OPTION_DEPS_TYPE="save-dev"
         shift
         ;;
+      --skip-symlinks)
+        CLI_OPTION_SKIP_SYMLINKS="skip-symlinks"
+        shift
+        ;;
       --open-github-pr)
         CLI_OPTION_OPEN_GITHUB_PR="open-github-pr"
         shift
@@ -343,6 +357,8 @@ verify_program_arguments() {
   elif check_invalid_clear_dep_value; then
     # Verify proper command args ordering: git-deps-syncer clear <name> --dry-run -v
     log_fatal "Missing/invalid argument value. usage: clear [dep-name]"
+  elif is_dev_dependencies && is_skip_symlinks; then
+    log_fatal "Mutual exclusive flags. --save-dev / --skip-symlinks"
   fi
 }
 

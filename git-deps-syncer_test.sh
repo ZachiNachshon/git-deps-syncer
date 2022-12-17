@@ -16,7 +16,6 @@ source "${GIT_DEPS_SYNCER_TEST_CURRENT_FOLDER_ABS_PATH}/external/shell_scripts_l
 source "${GIT_DEPS_SYNCER_TEST_CURRENT_FOLDER_ABS_PATH}/external/shell_scripts_lib/shell.sh"
 source "${GIT_DEPS_SYNCER_TEST_CURRENT_FOLDER_ABS_PATH}/external/shell_scripts_lib/test_lib/init.sh"
 source "${GIT_DEPS_SYNCER_TEST_CURRENT_FOLDER_ABS_PATH}/external/shell_scripts_lib/test_lib/assert.sh"
-source "${GIT_DEPS_SYNCER_TEST_CURRENT_FOLDER_ABS_PATH}/external/shell_scripts_lib/test_lib/assert.sh"
 source "${GIT_DEPS_SYNCER_TEST_CURRENT_FOLDER_ABS_PATH}/external/shell_scripts_lib/test_lib/test_logs.sh"
 
 TEST_DATA_GIT_DEPS_SYNCER_FRESH_REPO_PATH="${PWD}/test_data/fresh_repo"
@@ -218,6 +217,38 @@ test_sync_a_single_repo() {
   after_test
 }
 
+test_sync_a_single_repo_skipping_symlinks() {
+  before_test "test_sync_a_single_repo_skipping_symlinks"
+
+  local working_dir=$(get_path_for_managed_repo_no_links)
+
+  # Given I arrange test data
+  local dep_name_1="dummy_dep_1"
+  local dep_url_1="https://github.com/test/dummy_dep_1.git"
+  local dep_revision_1="abcdefghijk"
+
+  # And I sync a single repo command
+  export GIT_DEPS_REPO_WORKING_PATH="${working_dir}" &&
+    ./git-deps-syncer.sh sync "${dep_name_1}" --dry-run -y -v --skip-symlinks >&"${TEST_log}" ||
+    echo "Failed to run git-deps-syncer command"
+
+  # Then I expect sync single repo commands to get executed without symlinks to .git-deps folder
+  assert_expect_log "${SYNCER_CREATE_CACHE_DIR_COMMAND}"
+  assert_expect_log "$(printf "${SYNCER_CREATE_CACHE_DEP_COMMAND}" "${dep_name_1}")"
+  assert_expect_log "$(printf "${SYNCER_GIT_INIT_COMMAND}" "${dep_name_1}")"
+  assert_expect_log "$(printf "${SYNCER_GIT_FETCH_COMMAND}" "${dep_name_1}" "${dep_url_1}")"
+  assert_expect_log "$(printf "${SYNCER_GIT_RESET_COMMAND}" "${dep_name_1}" "${dep_revision_1}")"
+  assert_expect_log "$(printf "${SYNCER_GIT_CLEAN_COMMAND}" "${dep_name_1}")"
+  assert_expect_log "$(printf "${SYNCER_REMOVE_EXTERNAL_DEP_SKIP_SYMLINKS_COMMAND}" "${working_dir}" "${dep_name_1}")"
+  assert_expect_log "$(printf "${SYNCER_CREATE_EXTERNAL_DEP_SKIP_SYMLINKS_FOLDER_COMMAND}" "${working_dir}" "${dep_name_1}")"
+  assert_expect_log "$(printf "${SYNCER_RSYNC_SKIP_SYMLINKS_COMMAND}" "${dep_name_1}" "${working_dir}" "${dep_name_1}")"
+  assert_expect_log "$(printf "${SYNCER_GRANT_OWNERSHIP_SKIP_SYMLINKS_COMMAND}" "${working_dir}" "${dep_name_1}")"
+
+  assert_not_expect_log "$(printf "${SYNCER_LINK_DEP_COMMAND}" "${dep_name_1}" "${dep_name_1}")"
+
+  after_test
+}
+
 test_sync_a_single_dev_repo() {
   before_test "test_sync_a_single_dev_repo"
 
@@ -401,6 +432,7 @@ main() {
   test_sync_all_multiple_dev_repos
   test_sync_all_removes_stale_deps
   test_sync_a_single_repo
+  test_sync_a_single_repo_skipping_symlinks
   test_sync_a_single_dev_repo
   test_sync_single_repo_requires_repo_name
   test_show_all_declared_repos
