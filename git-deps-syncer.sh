@@ -14,18 +14,32 @@ GIT_DEPS_REPO_WORKING_PATH=${GIT_DEPS_REPO_WORKING_PATH:-${PWD}}
 
 GIT_DEPS_SYNCER_CURRENT_FOLDER_ABS_PATH=$(dirname "$(readlink "${BASH_SOURCE[0]}")")
 
+# Homebrew use different folder paths for Intel/ARM architecture:
+# Intel - /usr/local
+# ARM   - /opt/homebrew
+HOMEBREW_PREFIX_PATH=""
+ARCH=$(uname -m | tr '[:upper:]' '[:lower:]')
+if [[ ${ARCH} == *x86_64* ]]; then
+  HOMEBREW_PREFIX_PATH="/usr/local"
+elif [[ ${ARCH} == *arm* ]]; then
+  HOMEBREW_PREFIX_PATH="/opt/homebrew"
+else
+  echo "Architecture is not supported by git-deps-syncer. name: ${ARCH}"
+  exit 1
+fi
+
 # Path resolution to support Homebrew installation.
 # Homebrew is using multiple symlinks chains:
-# /usr/local/bin/git-deps-syncer
+# /usr/local/bin/git-deps-syncer OR /opt/homebrew/bin/git-deps-syncer
 #   ../Cellar/git-deps-syncer/0.x.0/bin/git-deps-syncer
 #     ../Cellar/git-deps-syncer/0.x.0/bin
-#       /usr/local/Cellar/git-deps-syncer/0.x.0/libexec
+#       /usr/local/Cellar/git-deps-syncer/0.x.0/libexec OR /opt/homebrew/Cellar/git-deps-syncer/0.x.0/libexec
 if [[ -n "${GIT_DEPS_SYNCER_CURRENT_FOLDER_ABS_PATH}" ]]; then
   if [[ "${GIT_DEPS_SYNCER_CURRENT_FOLDER_ABS_PATH}" == *Cellar* ]]; then
     if [[ "${GIT_DEPS_SYNCER_CURRENT_FOLDER_ABS_PATH}" == *bin ]]; then
       GIT_DEPS_SYNCER_CURRENT_FOLDER_ABS_PATH="${GIT_DEPS_SYNCER_CURRENT_FOLDER_ABS_PATH/bin/libexec}"
     fi
-    GIT_DEPS_SYNCER_CURRENT_FOLDER_ABS_PATH="${GIT_DEPS_SYNCER_CURRENT_FOLDER_ABS_PATH/..\/Cellar//usr/local/Cellar}"
+    GIT_DEPS_SYNCER_CURRENT_FOLDER_ABS_PATH="${GIT_DEPS_SYNCER_CURRENT_FOLDER_ABS_PATH/..\/Cellar/${HOMEBREW_PREFIX_PATH}/Cellar}"
     GIT_DEPS_SYNCER_CLI_INSTALL_PATH="${GIT_DEPS_SYNCER_CURRENT_FOLDER_ABS_PATH}"
   fi
 fi
@@ -334,7 +348,7 @@ parse_program_arguments() {
         ;;
       -v | --verbose)
         # Used by logger.sh
-        export LOGGER_DEBUG="true"
+        export LOGGER_VERBOSE="true"
         shift
         ;;
       -s | --silent)
