@@ -8,7 +8,7 @@
 #    DRY_RUN=True LOCAL_ARCHIVE_FILEPATH=/Users/zachin/codebase/github/git-deps-syncer/git-deps-syncer.tar.gz ./install.sh
 
 # When releasing a new version, the install script must be updated as well to latest
-VERSION=${VERSION="0.7.0"}
+VERSION=${VERSION="0.8.0"}
 
 # Run the install script in dry-run mode, no file system changes
 DRY_RUN=${DRY_RUN=""}

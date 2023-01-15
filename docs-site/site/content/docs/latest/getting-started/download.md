@@ -54,7 +54,7 @@ Example:
 curl -sfLS \
   https://raw.githubusercontent.com/ZachiNachshon/git-deps-syncer/master/install.sh | \
   DRY_RUN=True \
-  VERSION=0.7.0 \
+  VERSION=0.8.0 \
   bash -
 ```
 
