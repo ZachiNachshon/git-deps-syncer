@@ -70,7 +70,8 @@ is_text_equal() {
   #         ignore changes whose lines are all blank
 
   # Using sed to remove any color codes from text (example: \033[0;36m)
-  diff -wEbB -y --suppress-common-lines \
+  # diff -wEbB -y --suppress-common-lines \
+  diff -wbB -y --suppress-common-lines \
     <(echo -e "${str_a}" | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g") \
     <(echo -e "${str_b}" | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g")
 }
