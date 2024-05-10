@@ -1,0 +1,40 @@
+{
+    "python.analysis.extraPaths": [
+        "./provisioner_features_lib"
+    ],
+    "workbench.colorCustomizations": {
+        // Change the hex code to your desired background color
+        "activityBar.background": "#c33110", 
+        
+        // Change the hex code to your desired background color
+        "editorGroup.background": "#c33110", 
+
+        // Status bar background color
+        "statusBar.background": "#29292a",
+
+        // Status bar foreground color (text/icons)
+        "statusBar.foreground": "#ffffff",
+        
+        // Status bar border color (optional)
+        "statusBar.border": "#29292a",
+
+        // Activity bar foreground color (text/icons)
+        "activityBar.foreground": "#ffffff",
+        
+        // Activity bar border color (optional)
+        "activityBar.border": "#29292a",
+
+        // Panel border color
+        "panel.border": "#c33110",
+
+        "statusBarItem.remoteBackground": "#29292a",
+        "statusBarItem.remoteForeground": "#ffffff"
+
+        // "editor.background": "#6628AE", // Change the hex code to your desired background color
+        // "workbench.background": "#6628AE", // Change the hex code to your desired background color
+        // "sideBar.background": "#6628AE", // Change the hex code to your desired background color
+        // "editorGroupHeader.tabsBackground": "#6628AE", // Change the hex code to your desired background color
+        // "tab.activeBackground": "#6628AE", // Change the hex code to match the editor tab background color
+        // "tab.inactiveBackground": "#6628AE" // Change the hex code to your desired non-selected tab background color
+    },
+}
